@@ -428,7 +428,7 @@ h1 {
 
     .display-valor {
         font-size: 32px;
-        min-height: 50px;
+        min-height: 25px;
     }
 
     .tecla {

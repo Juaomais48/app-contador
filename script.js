@@ -67,7 +67,6 @@ let contagemAtual = {
             modoInsercaoSensor = 'teclado';
             modoInsercaoVisual = 'teclado';
 
-            document.getElementById('infoContagem').textContent = `Data: ${contagemAtual.data} | Veículo: ${contagemAtual.veiculo}`;
             document.getElementById('pontoAtual').textContent = `Ponto ${pontoAtualNumero}`;
             document.getElementById('displaySensor').textContent = '0';
             document.getElementById('displayVisual').textContent = '0';
@@ -78,7 +77,6 @@ let contagemAtual = {
 
             alterarModoInsercao('sensor');
             alterarModoInsercao('visual');
-            atualizarTotais();
             mostrarTela('telaContagem');
         }
 
@@ -217,18 +215,7 @@ let contagemAtual = {
                 document.getElementById('displayVisual').classList.remove('valor-confirmado');
                 
                 document.getElementById('pontoAtual').textContent = `Ponto ${pontoAtualNumero}`;
-                atualizarTotais();
             }
-        }
-
-        // Atualizar totais
-        function atualizarTotais() {
-            const totalSensor = contagemAtual.pontos.reduce((sum, p) => sum + p.sensor, 0);
-            const totalVisual = contagemAtual.pontos.reduce((sum, p) => sum + p.visual, 0);
-            const totalPontos = contagemAtual.pontos.length;
-
-            document.getElementById('totaisContagem').textContent = 
-                `Totais: Sensor = ${totalSensor} | Visual = ${totalVisual} | Pontos = ${totalPontos}`;
         }
 
         // Mostrar menu flutuante

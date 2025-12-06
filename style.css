@@ -118,24 +118,35 @@ h1 {
     background: #FFF3E0;
 }
 
+.campo-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    gap: 15px;
+}
+
 .campo-contagem h3 {
-    text-align: center;
-    margin-bottom: 10px;
     color: #333;
+    margin: 0;
+    white-space: nowrap;
 }
 
 .display-valor {
     background: white;
     border: 3px solid #333;
     border-radius: 10px;
+    padding: 10px 15px;
     text-align: right;
-    padding-right: 10px;
     font-size: 30px;
     font-weight: bold;
-    max-height: 50px;
-    margin-bottom: 20px;
     color: #333;
     word-wrap: break-word;
+    flex: 1;
+    max-height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
 }
 
 .teclado-numerico {

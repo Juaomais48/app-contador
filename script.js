@@ -221,8 +221,6 @@ let contagemAtual = {
 
                 contagemAtual.pontos.push(ponto);
                 
-                alert(`Ponto ${pontoAtualNumero} criado!\nSensor: ${valorSensorConfirmado}\nVisual: ${valorVisualConfirmado}`);
-                
                 pontoAtualNumero++;
                 valorSensor = '0';
                 valorVisual = '0';
@@ -250,15 +248,11 @@ let contagemAtual = {
                 return;
             }
 
-            if (!confirm('Deseja finalizar esta contagem?')) return;
-
             contagemAtual.finalizada = true;
             contagemAtual.totalSensor = contagemAtual.pontos.reduce((sum, p) => sum + p.sensor, 0);
             contagemAtual.totalVisual = contagemAtual.pontos.reduce((sum, p) => sum + p.visual, 0);
 
             salvarContagem(contagemAtual);
-
-            alert(`Contagem finalizada!\n\nTotal Sensor: ${contagemAtual.totalSensor}\nTotal Visual: ${contagemAtual.totalVisual}\nPontos: ${contagemAtual.pontos.length}`);
             
             fecharModal('modalMenu');
             mostrarTela('telaInicial');

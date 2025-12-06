@@ -36,7 +36,6 @@ h1 {
 .btn {
     width: 100%;
     padding: 15px;
-    margin: 10px 0;
     border: none;
     border-radius: 8px;
     font-size: 18px;
@@ -98,7 +97,7 @@ h1 {
 .contagem-container {
     display: flex;
     gap: 20px;
-    min-height: 500px;
+    min-height: 300px;
 }
 
 .campo-contagem {
@@ -154,11 +153,10 @@ h1 {
     grid-template-columns: repeat(3, 1fr);
     gap: 10px;
     margin-bottom: 20px;
-    flex: 1;
 }
 
 .tecla {
-    padding: 20px;
+    padding: 10px;
     font-size: 28px;
     font-weight: bold;
     border: none;
@@ -191,7 +189,7 @@ h1 {
 .botao-clique {
     width: 100%;
     height: 100%;
-    min-height: 300px;
+    min-height: 200px;
     border: none;
     border-radius: 15px;
     font-size: 72px;
@@ -206,11 +204,11 @@ h1 {
 }
 
 .botao-clique.sensor-clique {
-    background: linear-gradient(135deg, #2196F3, #1976D2);
+    background: linear-gradient(135deg, #2195f36c, #1976d26b);
 }
 
 .botao-clique.visual-clique {
-    background: linear-gradient(135deg, #FF9800, #F57C00);
+    background: linear-gradient(135deg, #ff990056, #f57b0057);
 }
 
 .botao-clique:hover {
@@ -238,15 +236,6 @@ h1 {
     border-radius: 8px;
     margin-bottom: 20px;
     text-align: center;
-}
-
-.info-contagem h2 {
-    color: #333;
-}
-
-.info-contagem p {
-    color: #666;
-    margin: 5px 0;
 }
 
 /* Lista de Contagens */
@@ -416,12 +405,10 @@ h1 {
     }
 
     .tecla {
-        padding: 15px;
         font-size: 24px;
     }
 
     .botao-clique {
-        min-height: 200px;
         font-size: 56px;
     }
 
@@ -440,12 +427,10 @@ h1 {
     }
 
     .tecla {
-        padding: 12px;
         font-size: 20px;
     }
 
     .botao-clique {
-        min-height: 200px;
         font-size: 48px;
     }
 }

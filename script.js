@@ -20,6 +20,26 @@ let contagemAtual = {
             const hoje = new Date().toISOString().split('T')[0];
             document.getElementById('inputData').value = hoje;
             carregarContagens();
+            
+            // Adicionar eventos de Enter nos campos
+            const inputData = document.getElementById('inputData');
+            const inputVeiculo = document.getElementById('inputVeiculo');
+            
+            // Enter no campo Data move para Veículo
+            inputData.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    inputVeiculo.focus();
+                }
+            });
+            
+            // Enter no campo Veículo inicia a contagem
+            inputVeiculo.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    iniciarContagem();
+                }
+            });
         });
 
         // Navegação entre telas

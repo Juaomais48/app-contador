@@ -11,8 +11,8 @@
         <!-- Tela Inicial -->
         <div id="telaInicial" class="screen active">
             <h1>Contador de Passageiros</h1>
-            <button class="btn btn-primary" onclick="mostrarTela('telaNova')">Criar Contagem</button>
-            <button class="btn btn-secondary" onclick="mostrarTela('telaLista')">Lista de Contagens</button>
+            <button class="btn btn-primary" style="margin-bottom: 10px;" onclick="mostrarTela('telaNova')">Criar Contagem</button>
+            <button class="btn btn-secondary" style="margin-bottom: 10px;" onclick="mostrarTela('telaLista')">Lista de Contagens</button>
             <button class="btn btn-tertiary" onclick="alert('Configurações em desenvolvimento')">Configurações</button>
         </div>
 
@@ -27,7 +27,7 @@
                 <label>Número do Veículo</label>
                 <input type="text" id="inputVeiculo" placeholder="Digite o número do veículo" required>
             </div>
-            <button class="btn btn-primary" onclick="iniciarContagem()">Iniciar Contagem</button>
+            <button class="btn btn-primary" style="margin-bottom: 10px;" onclick="iniciarContagem()">Iniciar Contagem</button>
             <button class="btn btn-tertiary" onclick="mostrarTela('telaInicial')">Voltar</button>
         </div>
 
@@ -149,7 +149,7 @@
                 </select>
             </div>
 
-            <button class="btn btn-primary" style="margin-top: 20px;" onclick="finalizarContagem()">Finalizar Contagem</button>
+            <button class="btn btn-primary" style="margin-top: 20px; margin-bottom: 10px;" onclick="finalizarContagem()">Finalizar Contagem</button>
             <button class="btn btn-secondary" onclick="fecharModal('modalMenu')">Fechar</button>
         </div>
     </div>

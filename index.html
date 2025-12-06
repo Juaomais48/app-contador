@@ -62,7 +62,7 @@
                     <!-- Botão Clique -->
                     <div class="botao-clique-container" id="cliqueSensor" style="display: none;">
                         <button class="botao-clique sensor-clique" onclick="incrementarClique('sensor')">
-                            +1
+                            <span style='opacity: 50%;'>&#128652;</span>
                         </button>
                     </div>
                     
@@ -96,7 +96,7 @@
                     <!-- Botão Clique -->
                     <div class="botao-clique-container" id="cliqueVisual" style="display: none;">
                         <button class="botao-clique visual-clique" onclick="incrementarClique('visual')">
-                            +1
+                            <span style='opacity: 50%;'>&#128064;</span>
                         </button>
                     </div>
                     
@@ -137,7 +137,7 @@
                 <label>Sensor:</label>
                 <select id="modoSensor" onchange="alterarModoInsercao('sensor')">
                     <option value="teclado">Teclado</option>
-                    <option value="clique">Clique (+1)</option>
+                    <option value="clique">Clique</option>
                 </select>
             </div>
 
@@ -145,7 +145,7 @@
                 <label>Visual:</label>
                 <select id="modoVisual" onchange="alterarModoInsercao('visual')">
                     <option value="teclado">Teclado</option>
-                    <option value="clique">Clique (+1)</option>
+                    <option value="clique">Clique</option>
                 </select>
             </div>
 

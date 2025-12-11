@@ -255,7 +255,8 @@ let contagemAtual = {
             salvarContagem(contagemAtual);
             
             fecharModal('modalMenu');
-            mostrarTela('telaInicial');
+            mostrarTela('telaLista');
+            mostrarDetalhes(contagemAtual.id);
         }
 
         // Salvar contagem
@@ -315,12 +316,29 @@ let contagemAtual = {
                 `Ponto ${p.numero}: Sensor=${p.sensor}, Visual=${p.visual}`
             ).join('\n');
 
+            // Calcular acurácia do sensor
+            let acuracia = 0;
+            if (contagem.totalVisual > 0) {
+                acuracia = Math.round((contagem.totalSensor / contagem.totalVisual) * 100);
+            }
+
+            // Determinar classe de acurácia para estilização
+            let classeAcuracia = '';
+            if (acuracia >= 95 && acuracia <= 105) {
+                classeAcuracia = 'acuracia-excelente';
+            } else if (acuracia >= 90 && acuracia <= 110) {
+                classeAcuracia = 'acuracia-boa';
+            } else {
+                classeAcuracia = 'acuracia-baixa';
+            }
+
             document.getElementById('conteudoModal').innerHTML = `
                 <p><strong>Data:</strong> ${contagem.data}</p>
                 <p><strong>Veículo:</strong> ${contagem.veiculo}</p>
                 <p><strong>Status:</strong> ${contagem.finalizada ? 'Finalizada' : 'Em andamento'}</p>
                 <p><strong>Total Sensor:</strong> ${contagem.totalSensor}</p>
                 <p><strong>Total Visual:</strong> ${contagem.totalVisual}</p>
+                <p><strong>Assertividade:</strong> <span class="${classeAcuracia}">${acuracia}%</span></p>
                 <p><strong>Pontos:</strong> ${contagem.pontos.length}</p>
                 <br>
                 <pre>${pontosDetalhes}</pre>

@@ -338,7 +338,7 @@ let contagemAtual = {
                 <p><strong>Status:</strong> ${contagem.finalizada ? 'Finalizada' : 'Em andamento'}</p>
                 <p><strong>Total Sensor:</strong> ${contagem.totalSensor}</p>
                 <p><strong>Total Visual:</strong> ${contagem.totalVisual}</p>
-                <p><strong>Assertividade:</strong> <span class="${classeAcuracia}">${acuracia}%</span></p>
+                <p><strong>Percentual:</strong> <span class="${classeAcuracia}">${acuracia}%</span></p>
                 <p><strong>Pontos:</strong> ${contagem.pontos.length}</p>
                 <br>
                 <pre>${pontosDetalhes}</pre>

@@ -3,16 +3,16 @@ let contagemAtual = {
             id: null,
             data: '',
             veiculo: '',
-            pontos: [],
+            embarques: [],
             finalizada: false
         };
 
-        let pontoAtualNumero = 1;
-        let valorSensor = '0';
+        let embarqueAtualNumero = 1;
+        let valorCameras = '0';
         let valorVisual = '0';
-        let valorSensorConfirmado = null;
+        let valorCamerasConfirmado = null;
         let valorVisualConfirmado = null;
-        let modoInsercaoSensor = 'teclado';
+        let modoInsercaoCameras = 'teclado';
         let modoInsercaoVisual = 'teclado';
 
         // Inicializar data atual
@@ -73,29 +73,29 @@ let contagemAtual = {
                 id: Date.now(),
                 data: formatarData(data),
                 veiculo: veiculo,
-                pontos: [],
+                embarques: [],
                 finalizada: false,
-                totalSensor: 0,
+                totalCameras: 0,
                 totalVisual: 0
             };
 
-            pontoAtualNumero = 1;
-            valorSensor = '0';
+            embarqueAtualNumero = 1;
+            valorCameras = '0';
             valorVisual = '0';
-            valorSensorConfirmado = null;
+            valorCamerasConfirmado = null;
             valorVisualConfirmado = null;
-            modoInsercaoSensor = 'teclado';
+            modoInsercaoCameras = 'teclado';
             modoInsercaoVisual = 'teclado';
 
-            document.getElementById('pontoAtual').textContent = `Ponto ${pontoAtualNumero}`;
-            document.getElementById('displaySensor').textContent = '0';
+            document.getElementById('embarqueAtual').textContent = `Embarque ${embarqueAtualNumero}`;
+            document.getElementById('displayCameras').textContent = '0';
             document.getElementById('displayVisual').textContent = '0';
-            document.getElementById('displaySensor').classList.remove('valor-confirmado');
+            document.getElementById('displayCameras').classList.remove('valor-confirmado');
             document.getElementById('displayVisual').classList.remove('valor-confirmado');
-            document.getElementById('modoSensor').value = 'teclado';
+            document.getElementById('modoCameras').value = 'teclado';
             document.getElementById('modoVisual').value = 'teclado';
 
-            alterarModoInsercao('sensor');
+            alterarModoInsercao('cameras');
             alterarModoInsercao('visual');
             mostrarTela('telaContagem');
         }
@@ -110,14 +110,14 @@ let contagemAtual = {
         function alterarModoInsercao(tipo) {
             const modo = document.getElementById(`modo${tipo.charAt(0).toUpperCase() + tipo.slice(1)}`).value;
             
-            if (tipo === 'sensor') {
-                modoInsercaoSensor = modo;
+            if (tipo === 'cameras') {
+                modoInsercaoCameras = modo;
                 if (modo === 'teclado') {
-                    document.getElementById('tecladoSensor').style.display = 'grid';
-                    document.getElementById('cliqueSensor').style.display = 'none';
+                    document.getElementById('tecladoCameras').style.display = 'grid';
+                    document.getElementById('cliqueCameras').style.display = 'none';
                 } else {
-                    document.getElementById('tecladoSensor').style.display = 'none';
-                    document.getElementById('cliqueSensor').style.display = 'flex';
+                    document.getElementById('tecladoCameras').style.display = 'none';
+                    document.getElementById('cliqueCameras').style.display = 'flex';
                 }
             } else {
                 modoInsercaoVisual = modo;
@@ -133,15 +133,15 @@ let contagemAtual = {
 
         // Adicionar dígito (modo teclado)
         function adicionarDigito(tipo, digito) {
-            if (tipo === 'sensor') {
-                if (valorSensorConfirmado !== null) return;
+            if (tipo === 'cameras') {
+                if (valorCamerasConfirmado !== null) return;
                 
-                if (valorSensor === '0') {
-                    valorSensor = digito;
+                if (valorCameras === '0') {
+                    valorCameras = digito;
                 } else {
-                    valorSensor += digito;
+                    valorCameras += digito;
                 }
-                document.getElementById('displaySensor').textContent = valorSensor;
+                document.getElementById('displayCameras').textContent = valorCameras;
             } else {
                 if (valorVisualConfirmado !== null) return;
                 
@@ -156,12 +156,12 @@ let contagemAtual = {
 
         // Incrementar clique (modo clique)
         function incrementarClique(tipo) {
-            if (tipo === 'sensor') {
-                if (valorSensorConfirmado !== null) return;
+            if (tipo === 'cameras') {
+                if (valorCamerasConfirmado !== null) return;
                 
-                const valorAtual = parseInt(valorSensor) || 0;
-                valorSensor = String(valorAtual + 1);
-                document.getElementById('displaySensor').textContent = valorSensor;
+                const valorAtual = parseInt(valorCameras) || 0;
+                valorCameras = String(valorAtual + 1);
+                document.getElementById('displayCameras').textContent = valorCameras;
             } else {
                 if (valorVisualConfirmado !== null) return;
                 
@@ -173,11 +173,11 @@ let contagemAtual = {
 
         // Apagar campo
         function apagarCampo(tipo) {
-            if (tipo === 'sensor') {
-                valorSensor = '0';
-                valorSensorConfirmado = null;
-                document.getElementById('displaySensor').textContent = '0';
-                document.getElementById('displaySensor').classList.remove('valor-confirmado');
+            if (tipo === 'cameras') {
+                valorCameras = '0';
+                valorCamerasConfirmado = null;
+                document.getElementById('displayCameras').textContent = '0';
+                document.getElementById('displayCameras').classList.remove('valor-confirmado');
             } else {
                 valorVisual = '0';
                 valorVisualConfirmado = null;
@@ -188,14 +188,14 @@ let contagemAtual = {
 
         // Confirmar campo
         function confirmarCampo(tipo) {
-            if (tipo === 'sensor') {
-                const valor = parseInt(valorSensor);
+            if (tipo === 'cameras') {
+                const valor = parseInt(valorCameras);
                 if (isNaN(valor) || valor < 0) {
                     alert('Digite um valor válido');
                     return;
                 }
-                valorSensorConfirmado = valor;
-                document.getElementById('displaySensor').classList.add('valor-confirmado');
+                valorCamerasConfirmado = valor;
+                document.getElementById('displayCameras').classList.add('valor-confirmado');
             } else {
                 const valor = parseInt(valorVisual);
                 if (isNaN(valor) || valor < 0) {
@@ -206,33 +206,33 @@ let contagemAtual = {
                 document.getElementById('displayVisual').classList.add('valor-confirmado');
             }
 
-            verificarECriarPonto();
+            verificarECriarEmbarque();
         }
 
-        // Verificar e criar ponto
-        function verificarECriarPonto() {
-            if (valorSensorConfirmado !== null && valorVisualConfirmado !== null) {
-                const ponto = {
-                    numero: pontoAtualNumero,
-                    sensor: valorSensorConfirmado,
+        // Verificar e criar embarque
+        function verificarECriarEmbarque() {
+            if (valorCamerasConfirmado !== null && valorVisualConfirmado !== null) {
+                const embarque = {
+                    numero: embarqueAtualNumero,
+                    cameras: valorCamerasConfirmado,
                     visual: valorVisualConfirmado,
                     timestamp: Date.now()
                 };
 
-                contagemAtual.pontos.push(ponto);
+                contagemAtual.embarques.push(embarque);
                 
-                pontoAtualNumero++;
-                valorSensor = '0';
+                embarqueAtualNumero++;
+                valorCameras = '0';
                 valorVisual = '0';
-                valorSensorConfirmado = null;
+                valorCamerasConfirmado = null;
                 valorVisualConfirmado = null;
                 
-                document.getElementById('displaySensor').textContent = '0';
+                document.getElementById('displayCameras').textContent = '0';
                 document.getElementById('displayVisual').textContent = '0';
-                document.getElementById('displaySensor').classList.remove('valor-confirmado');
+                document.getElementById('displayCameras').classList.remove('valor-confirmado');
                 document.getElementById('displayVisual').classList.remove('valor-confirmado');
                 
-                document.getElementById('pontoAtual').textContent = `Ponto ${pontoAtualNumero}`;
+                document.getElementById('embarqueAtual').textContent = `Embarque ${embarqueAtualNumero}`;
             }
         }
 
@@ -243,14 +243,14 @@ let contagemAtual = {
 
         // Finalizar contagem
         function finalizarContagem() {
-            if (contagemAtual.pontos.length === 0) {
-                alert('Adicione pelo menos um ponto antes de finalizar');
+            if (contagemAtual.embarques.length === 0) {
+                alert('Adicione pelo menos um embarque antes de finalizar');
                 return;
             }
 
             contagemAtual.finalizada = true;
-            contagemAtual.totalSensor = contagemAtual.pontos.reduce((sum, p) => sum + p.sensor, 0);
-            contagemAtual.totalVisual = contagemAtual.pontos.reduce((sum, p) => sum + p.visual, 0);
+            contagemAtual.totalCameras = contagemAtual.embarques.reduce((sum, p) => sum + p.cameras, 0);
+            contagemAtual.totalVisual = contagemAtual.embarques.reduce((sum, p) => sum + p.visual, 0);
 
             salvarContagem(contagemAtual);
             
@@ -290,7 +290,7 @@ let contagemAtual = {
                 <div class="contagem-item" onclick="mostrarDetalhes(${contagem.id})">
                     <h3>${contagem.data}</h3>
                     <p>Veículo: ${contagem.veiculo}</p>
-                    <p>Sensor: ${contagem.totalSensor} | Visual: ${contagem.totalVisual}</p>
+                    <p>Cameras: ${contagem.totalCameras} | Visual: ${contagem.totalVisual}</p>
                     <p class="${contagem.finalizada ? 'status-finalizada' : 'status-andamento'}">
                         ${contagem.finalizada ? '✓ Finalizada' : 'Em andamento'}
                     </p>
@@ -312,14 +312,14 @@ let contagemAtual = {
 
             if (!contagem) return;
 
-            const pontosDetalhes = contagem.pontos.map(p => 
-                `Ponto ${p.numero}: Sensor=${p.sensor}, Visual=${p.visual}`
+            const embarquesDetalhes = contagem.embarques.map(p => 
+                `Embarque ${p.numero}: Cameras=${p.cameras}, Visual=${p.visual}`
             ).join('\n');
 
-            // Calcular acurácia do sensor
+            // Calcular acurácia do cameras
             let acuracia = 0;
             if (contagem.totalVisual > 0) {
-                acuracia = Math.round((contagem.totalSensor / contagem.totalVisual) * 100);
+                acuracia = Math.round((contagem.totalCameras / contagem.totalVisual) * 100);
             }
 
             // Determinar classe de acurácia para estilização
@@ -336,12 +336,12 @@ let contagemAtual = {
                 <p><strong>Data:</strong> ${contagem.data}</p>
                 <p><strong>Veículo:</strong> ${contagem.veiculo}</p>
                 <p><strong>Status:</strong> ${contagem.finalizada ? 'Finalizada' : 'Em andamento'}</p>
-                <p><strong>Total Sensor:</strong> ${contagem.totalSensor}</p>
+                <p><strong>Total Cameras:</strong> ${contagem.totalCameras}</p>
                 <p><strong>Total Visual:</strong> ${contagem.totalVisual}</p>
                 <p><strong>Percentual:</strong> <span class="${classeAcuracia}">${acuracia}%</span></p>
-                <p><strong>Pontos:</strong> ${contagem.pontos.length}</p>
+                <p><strong>Embarques:</strong> ${contagem.embarques.length}</p>
                 <br>
-                <pre>${pontosDetalhes}</pre>
+                <pre>${embarquesDetalhes}</pre>
             `;
 
             document.getElementById('modalDetalhes').classList.add('active');

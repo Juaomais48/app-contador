@@ -34,44 +34,10 @@
         <!-- Tela de Contagem -->
         <div id="telaContagem" class="screen">
             <div class="info-contagem">
-                <h2 id="pontoAtual">Ponto 1</h2>
+                <h2 id="embarqueAtual">Embarque 1</h2>
             </div>
 
             <div class="contagem-container">
-                <!-- Campo Sensor -->
-                <div class="campo-contagem sensor">
-                    <div class="campo-header">
-                        <h3>Sensor</h3>
-                        <div class="display-valor" id="displaySensor">0</div>
-                    </div>
-                    
-                    <!-- Teclado Numérico -->
-                    <div class="teclado-numerico" id="tecladoSensor">
-                        <button class="tecla" onclick="adicionarDigito('sensor', '7')">7</button>
-                        <button class="tecla" onclick="adicionarDigito('sensor', '8')">8</button>
-                        <button class="tecla" onclick="adicionarDigito('sensor', '9')">9</button>
-                        <button class="tecla" onclick="adicionarDigito('sensor', '4')">4</button>
-                        <button class="tecla" onclick="adicionarDigito('sensor', '5')">5</button>
-                        <button class="tecla" onclick="adicionarDigito('sensor', '6')">6</button>
-                        <button class="tecla" onclick="adicionarDigito('sensor', '1')">1</button>
-                        <button class="tecla" onclick="adicionarDigito('sensor', '2')">2</button>
-                        <button class="tecla" onclick="adicionarDigito('sensor', '3')">3</button>
-                        <button class="tecla" onclick="adicionarDigito('sensor', '0')" style="grid-column: span 3;">0</button>
-                    </div>
-
-                    <!-- Botão Clique -->
-                    <div class="botao-clique-container" id="cliqueSensor" style="display: none;">
-                        <button class="botao-clique sensor-clique" onclick="incrementarClique('sensor')">
-                            <span style='opacity: 50%;'>&#128652;</span>
-                        </button>
-                    </div>
-                    
-                    <div class="botoes">
-                        <button class="btn btn-danger" onclick="apagarCampo('sensor')">Apagar</button>
-                        <button class="btn btn-success" onclick="confirmarCampo('sensor')">Confirmar</button>
-                    </div>
-                </div>
-
                 <!-- Campo Visual -->
                 <div class="campo-contagem visual">
                     <div class="campo-header">
@@ -105,6 +71,40 @@
                         <button class="btn btn-success" onclick="confirmarCampo('visual')">Confirmar</button>
                     </div>
                 </div>
+
+                <!-- Campo Cameras -->
+                <div class="campo-contagem cameras">
+                    <div class="campo-header">
+                        <h3>Cameras</h3>
+                        <div class="display-valor" id="displayCameras">0</div>
+                    </div>
+                    
+                    <!-- Teclado Numérico -->
+                    <div class="teclado-numerico" id="tecladoCameras">
+                        <button class="tecla" onclick="adicionarDigito('cameras', '7')">7</button>
+                        <button class="tecla" onclick="adicionarDigito('cameras', '8')">8</button>
+                        <button class="tecla" onclick="adicionarDigito('cameras', '9')">9</button>
+                        <button class="tecla" onclick="adicionarDigito('cameras', '4')">4</button>
+                        <button class="tecla" onclick="adicionarDigito('cameras', '5')">5</button>
+                        <button class="tecla" onclick="adicionarDigito('cameras', '6')">6</button>
+                        <button class="tecla" onclick="adicionarDigito('cameras', '1')">1</button>
+                        <button class="tecla" onclick="adicionarDigito('cameras', '2')">2</button>
+                        <button class="tecla" onclick="adicionarDigito('cameras', '3')">3</button>
+                        <button class="tecla" onclick="adicionarDigito('cameras', '0')" style="grid-column: span 3;">0</button>
+                    </div>
+
+                    <!-- Botão Clique -->
+                    <div class="botao-clique-container" id="cliqueCameras" style="display: none;">
+                        <button class="botao-clique cameras-clique" onclick="incrementarClique('cameras')">
+                            <span style='opacity: 50%;'>&#128652;</span>
+                        </button>
+                    </div>
+                    
+                    <div class="botoes">
+                        <button class="btn btn-danger" onclick="apagarCampo('cameras')">Apagar</button>
+                        <button class="btn btn-success" onclick="confirmarCampo('cameras')">Confirmar</button>
+                    </div>
+                </div>
             </div>
 
             <button class="fab" onclick="mostrarMenuFlutuante()">⋮</button>
@@ -132,18 +132,18 @@
     <div id="modalMenu" class="modal" onclick="fecharModal('modalMenu')">
         <div class="modal-content menu-opcoes" onclick="event.stopPropagation()">
             <h3>Opções</h3>
-            
+
             <div class="opcao-modo">
-                <label>Sensor:</label>
-                <select id="modoSensor" onchange="alterarModoInsercao('sensor')">
+                <label>Visual:</label>
+                <select id="modoVisual" onchange="alterarModoInsercao('visual')">
                     <option value="teclado">Teclado</option>
                     <option value="clique">Clique</option>
                 </select>
             </div>
 
             <div class="opcao-modo">
-                <label>Visual:</label>
-                <select id="modoVisual" onchange="alterarModoInsercao('visual')">
+                <label>Câmeras:</label>
+                <select id="modoCameras" onchange="alterarModoInsercao('cameras')">
                     <option value="teclado">Teclado</option>
                     <option value="clique">Clique</option>
                 </select>

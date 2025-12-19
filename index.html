@@ -24,6 +24,10 @@
                 <input type="date" id="inputData" required>
             </div>
             <div class="form-group">
+                <label>Horário</label>
+                <input type="time" id="inputHorario" step="1" required>
+            </div>
+            <div class="form-group">
                 <label>Número do Veículo</label>
                 <input type="text" id="inputVeiculo" placeholder="Digite o número do veículo" required>
             </div>
@@ -42,7 +46,7 @@
                 <div class="campo-contagem visual">
                     <div class="campo-header">
                         <h3>Visual</h3>
-                        <div class="display-valor" id="displayVisual">0</div>
+                        <input type="text" class="display-valor" id="displayVisual" value="0" readonly>
                     </div>
                     
                     <!-- Teclado Numérico -->
@@ -68,6 +72,7 @@
                     
                     <div class="botoes">
                         <button class="btn btn-danger" onclick="apagarCampo('visual')">Apagar</button>
+                        <button class="btn btn-info" id="btnCorrecaoVisual" onclick="corrigirCampo('visual')" style="display: none;">Corrigir</button>
                         <button class="btn btn-success" onclick="confirmarCampo('visual')">Confirmar</button>
                     </div>
                 </div>
@@ -75,8 +80,8 @@
                 <!-- Campo Cameras -->
                 <div class="campo-contagem cameras">
                     <div class="campo-header">
-                        <h3>Cameras</h3>
-                        <div class="display-valor" id="displayCameras">0</div>
+                        <h3>Câmeras</h3>
+                        <input type="text" class="display-valor" id="displayCameras" value="0" readonly>
                     </div>
                     
                     <!-- Teclado Numérico -->
@@ -102,6 +107,7 @@
                     
                     <div class="botoes">
                         <button class="btn btn-danger" onclick="apagarCampo('cameras')">Apagar</button>
+                        <button class="btn btn-info" id="btnCorrecaoCameras" onclick="corrigirCampo('cameras')" style="display: none;">Corrigir</button>
                         <button class="btn btn-success" onclick="confirmarCampo('cameras')">Confirmar</button>
                     </div>
                 </div>
@@ -149,7 +155,8 @@
                 </select>
             </div>
 
-            <button class="btn btn-primary" style="margin-top: 20px; margin-bottom: 10px;" onclick="finalizarContagem()">Finalizar Contagem</button>
+            <button class="btn btn-warning" style="margin-top: 20px; margin-bottom: 10px;" onclick="pausarContagem()">Pausar Contagem</button>
+            <button class="btn btn-primary" style="margin-bottom: 10px;" onclick="finalizarContagem()">Finalizar Contagem</button>
             <button class="btn btn-secondary" onclick="fecharModal('modalMenu')">Fechar</button>
         </div>
     </div>

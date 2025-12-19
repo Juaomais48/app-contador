@@ -74,6 +74,16 @@ h1 {
     color: white;
 }
 
+.btn-warning {
+    background: #FF9800;
+    color: white;
+}
+
+.btn-info {
+    background: #2196F3;
+    color: white;
+}
+
 .form-group {
     margin: 20px 0;
 }
@@ -142,10 +152,24 @@ h1 {
     color: #333;
     word-wrap: break-word;
     max-height: 35px;
+    min-width: 0;
     display: flex;
     align-items: center;
     justify-content: flex-end;
     flex: 1;
+    cursor: text;
+    transition: all 0.3s;
+    overflow: hidden;
+}
+
+.display-valor:focus {
+    outline: none;
+}
+
+.display-valor.display-focado {
+    border-color: #2196F3;
+    border-width: 4px;
+    box-shadow: 0 0 10px rgba(33, 150, 243, 0.5);
 }
 
 .teclado-numerico {
@@ -284,6 +308,11 @@ h1 {
     font-weight: bold;
 }
 
+.status-pausada {
+    color: #2196F3;
+    font-weight: bold;
+}
+
 .fab {
     position: fixed;
     bottom: 30px;
@@ -355,11 +384,14 @@ h1 {
     padding: 8px 16px;
     font-size: 14px;
     margin: 5px;
+    width: auto;
+    display: inline-block;
 }
 
 .valor-confirmado {
     background: #4CAF50 !important;
     color: white !important;
+    border-color: #4CAF50 !important;
 }
 
 /* Menu Flutuante */

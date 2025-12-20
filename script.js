@@ -147,6 +147,8 @@ function mostrarTela(idTela) {
 
 // Iniciar nova contagem
 function iniciarContagem() {
+    const matricula = document.getElementById('inputMatricula').value.trim();
+    const operador = document.getElementById('inputOperador').value.trim();
     const veiculo = document.getElementById('inputVeiculo').value.trim();
     const data = document.getElementById('inputData').value;
     const horario = document.getElementById('inputHorario').value;
@@ -168,9 +170,11 @@ function iniciarContagem() {
 
     contagemAtual = {
         id: Date.now(),
+        matricula: matricula,
+        operador: operador,
+        veiculo: veiculo,
         data: formatarData(data),
         horario: horario,
-        veiculo: veiculo,
         embarques: [],
         finalizada: false,
         pausada: false,
@@ -537,16 +541,18 @@ function exibirContagens(filtro = '') {
         
         return `
             <div class="contagem-item" onclick="mostrarDetalhes(${contagem.id})">
-                <h3>${contagem.data} - ${contagem.horario}</h3>
+                <p>Matrícula: ${contagem.matricula}</p>
+                <p>Operador: ${contagem.operador}</p>
                 <p>Veículo: ${contagem.veiculo}</p>
+                <h3>${contagem.data} - ${contagem.horario}</h3>
                 <p>Câmeras: ${contagem.totalCameras} | Visual: ${contagem.totalVisual}</p>
                 <p class="${statusClasse}">${statusTexto}</p>
                 ${botaoRetomar}
-                <button class="btn btn-success btn-small" onclick="event.stopPropagation(); exportarContagem(${contagem.id})">Exportar Excel - LibreOffice</button>
+                <button class="btn btn-success btn-small" onclick="event.stopPropagation(); alert('Função em Desenvolvimento')">Exportar Excel - LibreOffice</button>
                 <button class="btn btn-danger btn-small" onclick="event.stopPropagation(); excluirContagem(${contagem.id})">Excluir</button>
             </div>
         `;
-    }).join('');
+    }).join(''); // exportarContagem(${contagem.id})
 }
 
 // Filtrar contagens
@@ -585,9 +591,11 @@ function mostrarDetalhes(id) {
     let statusTexto = contagem.finalizada ? 'Finalizada' : (contagem.pausada ? 'Pausada' : 'Em andamento');
 
     document.getElementById('conteudoModal').innerHTML = `
+        <p><strong>Matícula:</strong> ${contagem.matricula}</p>
+        <p><strong>Operador:</strong> ${contagem.operador}</p>
+        <p><strong>Veículo:</strong> ${contagem.veiculo}</p>
         <p><strong>Data:</strong> ${contagem.data}</p>
         <p><strong>Horário:</strong> ${contagem.horario}</p>
-        <p><strong>Veículo:</strong> ${contagem.veiculo}</p>
         <p><strong>Status:</strong> ${statusTexto}</p>
         <p><strong>Total Câmeras:</strong> ${contagem.totalCameras}</p>
         <p><strong>Total Visual:</strong> ${contagem.totalVisual}</p>

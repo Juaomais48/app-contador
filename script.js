@@ -203,6 +203,10 @@ function resetarCampos() {
 
     alterarModoInsercao('cameras');
     alterarModoInsercao('visual');
+
+    setTimeout(() => {
+        focarSeNecessario('displayVisual');
+    }, 100);
 }
 
 // Formatar data
@@ -247,6 +251,7 @@ function adicionarDigito(tipo, digito) {
             valorCameras += digito;
         }
         document.getElementById('displayCameras').value = valorCameras;
+        focarSeNecessario('displayCameras');
     } else {
         if (valorVisualConfirmado !== null) return;
         
@@ -256,6 +261,7 @@ function adicionarDigito(tipo, digito) {
             valorVisual += digito;
         }
         document.getElementById('displayVisual').value = valorVisual;
+        focarSeNecessario('displayVisual');
     }
 }
 
@@ -270,6 +276,7 @@ function apagarUltimoDigito(tipo) {
             valorCameras = '0';
         }
         document.getElementById('displayCameras').value = valorCameras;
+        focarSeNecessario('displayCameras');
     } else {
         if (valorVisualConfirmado !== null) return;
         
@@ -279,6 +286,7 @@ function apagarUltimoDigito(tipo) {
             valorVisual = '0';
         }
         document.getElementById('displayVisual').value = valorVisual;
+        focarSeNecessario('displayVisual');
     }
 }
 
@@ -290,12 +298,14 @@ function incrementarClique(tipo) {
         const valorAtual = parseInt(valorCameras) || 0;
         valorCameras = String(valorAtual + 1);
         document.getElementById('displayCameras').value = valorCameras;
+        focarSeNecessario('displayCameras');
     } else {
         if (valorVisualConfirmado !== null) return;
         
         const valorAtual = parseInt(valorVisual) || 0;
         valorVisual = String(valorAtual + 1);
         document.getElementById('displayVisual').value = valorVisual;
+        focarSeNecessario('displayVisual');
     }
 }
 
@@ -315,6 +325,11 @@ function confirmarCampo(tipo) {
         valorCamerasConfirmado = valor;
         document.getElementById('displayCameras').classList.add('valor-confirmado');
         document.getElementById('btnCorrecaoCameras').style.display = 'inline-block';
+        document.querySelector('.campo-contagem.cameras .btn-success').style.display = 'none';
+
+        setTimeout(() => {
+            focarSeNecessario('displayVisual');
+        }, 100);
     } else {
         const valor = parseInt(valorVisual);
         if (isNaN(valor) || valor < 0) {
@@ -324,6 +339,11 @@ function confirmarCampo(tipo) {
         valorVisualConfirmado = valor;
         document.getElementById('displayVisual').classList.add('valor-confirmado');
         document.getElementById('btnCorrecaoVisual').style.display = 'inline-block';
+        document.querySelector('.campo-contagem.visual .btn-success').style.display = 'none';
+
+        setTimeout(() => {
+            focarSeNecessario('displayCameras');
+        }, 100);
     }
 
     verificarECriarEmbarque();
@@ -335,12 +355,14 @@ function corrigirCampo(tipo) {
         valorCamerasConfirmado = null;
         document.getElementById('displayCameras').classList.remove('valor-confirmado');
         document.getElementById('btnCorrecaoCameras').style.display = 'none';
-        document.getElementById('displayCameras').focus();
+        document.querySelector('.campo-contagem.cameras .btn-success').style.display = 'inline-block';
+        focarSeNecessario('displayCameras');
     } else {
         valorVisualConfirmado = null;
         document.getElementById('displayVisual').classList.remove('valor-confirmado');
         document.getElementById('btnCorrecaoVisual').style.display = 'none';
-        document.getElementById('displayVisual').focus();
+        document.querySelector('.campo-contagem.visual .btn-success').style.display = 'inline-block';
+        focarSeNecessario('displayVisual');
     }
 }
 
@@ -368,8 +390,15 @@ function verificarECriarEmbarque() {
         document.getElementById('displayVisual').classList.remove('valor-confirmado');
         document.getElementById('btnCorrecaoCameras').style.display = 'none';
         document.getElementById('btnCorrecaoVisual').style.display = 'none';
+
+        document.querySelector('.campo-contagem.cameras .btn-success').style.display = 'inline-block';
+        document.querySelector('.campo-contagem.visual .btn-success').style.display = 'inline-block';
         
         document.getElementById('embarqueAtual').textContent = `Embarque ${embarqueAtualNumero}`;
+
+        setTimeout(() => {
+            focarSeNecessario('displayVisual');
+        }, 100);
     }
 }
 
@@ -564,4 +593,12 @@ function excluirContagem(id) {
     localStorage.setItem('contagens', JSON.stringify(contagens));
     
     exibirContagens();
+}
+
+// Vefifica se um elemento precisa de foco
+function focarSeNecessario(elementId) {
+    const elemento = document.getElementById(elementId);
+    if (document.activeElement !== elemento) {
+        elemento.focus();
+    }
 }

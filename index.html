@@ -13,7 +13,6 @@
             <h1>Contador de Passageiros</h1>
             <button class="btn btn-primary" style="margin-bottom: 10px;" onclick="mostrarTela('telaNova')">Criar Contagem</button>
             <button class="btn btn-secondary" style="margin-bottom: 10px;" onclick="mostrarTela('telaLista')">Lista de Contagens</button>
-            <button class="btn btn-tertiary" onclick="alert('Configurações em desenvolvimento')">Configurações</button>
         </div>
 
         <!-- Tela Nova Contagem -->
@@ -137,6 +136,7 @@
     <!-- Modal Menu Flutuante -->
     <div id="modalMenu" class="modal" onclick="fecharModal('modalMenu')">
         <div class="modal-content menu-opcoes" onclick="event.stopPropagation()">
+            <button class="btn-close-modal" onclick="fecharModal('modalMenu')">✕</button>
             <h3>Opções</h3>
 
             <div class="opcao-modo">
@@ -157,7 +157,6 @@
 
             <button class="btn btn-warning" style="margin-top: 20px; margin-bottom: 10px;" onclick="pausarContagem()">Pausar Contagem</button>
             <button class="btn btn-primary" style="margin-bottom: 10px;" onclick="finalizarContagem()">Finalizar Contagem</button>
-            <button class="btn btn-secondary" onclick="fecharModal('modalMenu')">Fechar</button>
         </div>
     </div>
 

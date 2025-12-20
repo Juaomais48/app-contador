@@ -1,9 +1,11 @@
 // Estado da aplicação
 let contagemAtual = {
     id: null,
+    matricula: '',
+    operador: '',
+    veiculo: '',
     data: '',
     horario: '',
-    veiculo: '',
     embarques: [],
     finalizada: false,
     pausada: false
@@ -26,9 +28,35 @@ document.addEventListener('DOMContentLoaded', () => {
     carregarContagens();
     
     // Adicionar eventos de Enter nos campos
+    const inputMatricula = document.getElementById('inputMatricula');
+    const inputOperador = document.getElementById('inputOperador');
+    const inputVeiculo = document.getElementById('inputVeiculo');
     const inputData = document.getElementById('inputData');
     const inputHorario = document.getElementById('inputHorario');
-    const inputVeiculo = document.getElementById('inputVeiculo');
+
+    // Enter no campo Matrícula move para Operador
+    inputMatricula.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            inputOperador.focus();
+        }
+    });
+
+    // Enter no campo Operador move para Veículo
+    inputOperador.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            inputVeiculo.focus();
+        }
+    });
+
+    // Enter no campo Veículo move para Data
+    inputVeiculo.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            inputData.focus();
+        }
+    });
     
     // Enter no campo Data move para Horário
     inputData.addEventListener('keypress', function(e) {
@@ -38,16 +66,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
     
-    // Enter no campo Horário move para Veículo
+    // Enter no campo Horário inicia a contagem
     inputHorario.addEventListener('keypress', function(e) {
-        if (e.key === 'Enter') {
-            e.preventDefault();
-            inputVeiculo.focus();
-        }
-    });
-    
-    // Enter no campo Veículo inicia a contagem
-    inputVeiculo.addEventListener('keypress', function(e) {
         if (e.key === 'Enter') {
             e.preventDefault();
             iniciarContagem();
@@ -127,9 +147,14 @@ function mostrarTela(idTela) {
 
 // Iniciar nova contagem
 function iniciarContagem() {
+    const veiculo = document.getElementById('inputVeiculo').value.trim();
     const data = document.getElementById('inputData').value;
     const horario = document.getElementById('inputHorario').value;
-    const veiculo = document.getElementById('inputVeiculo').value.trim();
+
+    if (!veiculo) {
+        alert('Digite o número do veículo');
+        return;
+    }
 
     if (!data) {
         alert('Selecione uma data');
@@ -138,11 +163,6 @@ function iniciarContagem() {
 
     if (!horario) {
         alert('Selecione um horário');
-        return;
-    }
-
-    if (!veiculo) {
-        alert('Digite o número do veículo');
         return;
     }
 
@@ -522,6 +542,7 @@ function exibirContagens(filtro = '') {
                 <p>Câmeras: ${contagem.totalCameras} | Visual: ${contagem.totalVisual}</p>
                 <p class="${statusClasse}">${statusTexto}</p>
                 ${botaoRetomar}
+                <button class="btn btn-success btn-small" onclick="event.stopPropagation(); exportarContagem(${contagem.id})">Exportar Excel - LibreOffice</button>
                 <button class="btn btn-danger btn-small" onclick="event.stopPropagation(); excluirContagem(${contagem.id})">Excluir</button>
             </div>
         `;
@@ -601,4 +622,72 @@ function focarSeNecessario(elementId) {
     if (document.activeElement !== elemento) {
         elemento.focus();
     }
+}
+
+// Exportar contagem para ODS
+function exportarContagem(id) {
+    const contagens = carregarContagens();
+    const contagem = contagens.find(c => c.id === id);
+    
+    if (!contagem) {
+        alert('Contagem não encontrada');
+        return;
+    }
+    
+    // Calcular acurácia
+    let acuracia = 0;
+    if (contagem.totalVisual > 0) {
+        acuracia = Math.round((contagem.totalCameras / contagem.totalVisual) * 100);
+    }
+    
+    // Preparar dados da planilha
+    const dados = [];
+    
+    // Cabeçalho com informações gerais
+    dados.push(['RELATÓRIO DE CONTAGEM DE PASSAGEIROS']);
+    dados.push([]);
+    dados.push(['Data:', contagem.data]);
+    dados.push(['Horário:', contagem.horario]);
+    dados.push(['Veículo:', contagem.veiculo]);
+    dados.push(['Status:', contagem.finalizada ? 'Finalizada' : (contagem.pausada ? 'Pausada' : 'Em andamento')]);
+    dados.push([]);
+    dados.push(['TOTAIS']);
+    dados.push(['Total Câmeras:', contagem.totalCameras]);
+    dados.push(['Total Visual:', contagem.totalVisual]);
+    dados.push(['Percentual:', acuracia + '%']);
+    dados.push(['Total de Embarques:', contagem.embarques.length]);
+    dados.push([]);
+    
+    // Cabeçalho da tabela de embarques
+    dados.push(['Embarque', 'Câmeras', 'Visual', 'Diferença']);
+    
+    // Dados dos embarques
+    contagem.embarques.forEach(embarque => {
+        const diferenca = embarque.cameras - embarque.visual;
+        dados.push([
+            embarque.numero,
+            embarque.cameras,
+            embarque.visual,
+            diferenca
+        ]);
+    });
+    
+    // Criar workbook e worksheet
+    const wb = XLSX.utils.book_new();
+    const ws = XLSX.utils.aoa_to_sheet(dados);
+    
+    // Definir largura das colunas
+    ws['!cols'] = [
+        { wch: 20 },
+        { wch: 15 },
+        { wch: 15 },
+        { wch: 15 }
+    ];
+    
+    // Adicionar worksheet ao workbook
+    XLSX.utils.book_append_sheet(wb, ws, 'Contagem');
+    
+    // Gerar arquivo ODS
+    const nomeArquivo = `Contagem_${contagem.veiculo}_${contagem.data.replace(/\//g, '-')}.ods`;
+    XLSX.writeFile(wb, nomeArquivo, { bookType: 'ods' });
 }

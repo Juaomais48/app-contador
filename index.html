@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Contador de Passageiros</title>
     <link rel="stylesheet" href="style.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 </head>
 <body>
     <div class="container">
@@ -20,21 +19,30 @@
         <div id="telaNova" class="screen">
             <h1>Nova Contagem</h1>
             <div class="form-group">
+                <label>Data</label>
+                <input type="date" id="inputData" required>
+            </div>
+
+            <div class="form-group">
+                <label>Número do Carro</label>
+                <input type="text" id="inputCarro" placeholder="Digite o número do carro" required>
+            </div>
+
+            <div class="form-group">
                 <label>Matricula</label>
                 <input type="text" id="inputMatricula" placeholder="(Opcional)">
             </div>
+
+            <div class="form-group">
+                <label>Máquina</label>
+                <input type="text" id="inputMaquina" placeholder="(Opcional)">
+            </div>
+
             <div class="form-group">
                 <label>Nome do Operador</label>
                 <input type="text" id="inputOperador" placeholder="(Opcional)">
             </div>
-            <div class="form-group">
-                <label>Número do Veículo</label>
-                <input type="text" id="inputVeiculo" placeholder="Digite o número do veículo" required>
-            </div>
-            <div class="form-group">
-                <label>Data</label>
-                <input type="date" id="inputData" required>
-            </div>
+
             <div class="form-group">
                 <label>Horário</label>
                 <input type="time" id="inputHorario" step="1" required>
@@ -127,7 +135,7 @@
         <!-- Tela Lista de Contagens -->
         <div id="telaLista" class="screen">
             <h1>Lista de Contagens</h1>
-            <input type="text" id="searchInput" class="search-bar" placeholder="Buscar por data ou veículo..." onkeyup="filtrarContagens()">
+            <input type="text" id="searchInput" class="search-bar" placeholder="Buscar por data ou carro..." onkeyup="filtrarContagens()">
             <div id="listaContagens"></div>
             <button class="btn btn-tertiary" onclick="mostrarTela('telaInicial')" style="margin-top: 20px;">Voltar</button>
         </div>
@@ -169,6 +177,7 @@
         </div>
     </div>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.3.0/exceljs.min.js"></script>
     <script src="script.js"></script>  
 </body>
 </html>

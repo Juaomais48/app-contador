@@ -1,10 +1,11 @@
 // Estado da aplicação
 let contagemAtual = {
     id: null,
-    matricula: '',
-    operador: '',
-    veiculo: '',
     data: '',
+    carro: '',
+    matricula: '',
+    maquina: '',  
+    operador: '',
     horario: '',
     embarques: [],
     finalizada: false,
@@ -22,44 +23,76 @@ let campoAtualFocado = null;
 
 // Inicializar data e horário atual
 document.addEventListener('DOMContentLoaded', () => {
-    const hoje = new Date();
-    document.getElementById('inputData').value = hoje.toISOString().split('T')[0];
-    document.getElementById('inputHorario').value = hoje.toTimeString().slice(0, 8);
     carregarContagens();
     
     // Adicionar eventos de Enter nos campos
-    const inputMatricula = document.getElementById('inputMatricula');
-    const inputOperador = document.getElementById('inputOperador');
-    const inputVeiculo = document.getElementById('inputVeiculo');
     const inputData = document.getElementById('inputData');
+    const inputCarro = document.getElementById('inputCarro');
+    const inputMatricula = document.getElementById('inputMatricula');
+    const inputMaquina = document.getElementById('inputMaquina');
+    const inputOperador = document.getElementById('inputOperador');
     const inputHorario = document.getElementById('inputHorario');
 
-    // Enter no campo Matrícula move para Operador
+    // Array com ordem dos campos
+    const campos = [inputData, inputCarro, inputMatricula, inputMaquina, inputOperador, inputHorario];
+
+    // Adicionar navegação com setas para todos os campos
+    campos.forEach((campo, index) => {
+        campo.addEventListener('keydown', function(e) {
+            // Seta para baixo - vai para o próximo campo
+            if (e.key === 'ArrowDown') {
+                e.preventDefault();
+                const proximoIndex = index + 1;
+                if (proximoIndex < campos.length) {
+                    campos[proximoIndex].focus();
+                }
+            }
+            
+            // Seta para cima - volta para o campo anterior
+            if (e.key === 'ArrowUp') {
+                e.preventDefault();
+                const anteriorIndex = index - 1;
+                if (anteriorIndex >= 0) {
+                    campos[anteriorIndex].focus();
+                }
+            }
+        });
+    });
+
+    // Enter no campo Data move para Carro
+    inputData.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            inputCarro.focus();
+        }
+    });
+
+    // Enter no campo Carro move para Matrícula
+    inputCarro.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            inputMatricula.focus();
+        }
+    });
+
+    // Enter no campo Matrícula move para Máquina
     inputMatricula.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            inputMaquina.focus();
+        }
+    });
+
+    // Enter no campo Máquina move para Operador
+    inputMaquina.addEventListener('keypress', function(e) {
         if (e.key === 'Enter') {
             e.preventDefault();
             inputOperador.focus();
         }
     });
 
-    // Enter no campo Operador move para Veículo
+    // Enter no campo Operador move para Horário
     inputOperador.addEventListener('keypress', function(e) {
-        if (e.key === 'Enter') {
-            e.preventDefault();
-            inputVeiculo.focus();
-        }
-    });
-
-    // Enter no campo Veículo move para Data
-    inputVeiculo.addEventListener('keypress', function(e) {
-        if (e.key === 'Enter') {
-            e.preventDefault();
-            inputData.focus();
-        }
-    });
-    
-    // Enter no campo Data move para Horário
-    inputData.addEventListener('keypress', function(e) {
         if (e.key === 'Enter') {
             e.preventDefault();
             inputHorario.focus();
@@ -147,21 +180,22 @@ function mostrarTela(idTela) {
 
 // Iniciar nova contagem
 function iniciarContagem() {
-    const matricula = document.getElementById('inputMatricula').value.trim();
-    const operador = document.getElementById('inputOperador').value.trim();
-    const veiculo = document.getElementById('inputVeiculo').value.trim();
     const data = document.getElementById('inputData').value;
+    const carro = document.getElementById('inputCarro').value.trim();
+    const matricula = document.getElementById('inputMatricula').value.trim();
+    const maquina = document.getElementById('inputMaquina').value.trim();
+    const operador = document.getElementById('inputOperador').value.trim();
     const horario = document.getElementById('inputHorario').value;
-
-    if (!veiculo) {
-        alert('Digite o número do veículo');
-        return;
-    }
 
     if (!data) {
         alert('Selecione uma data');
         return;
     }
+
+    if (!carro) {
+        alert('Digite o número do carro');
+        return;
+    } 
 
     if (!horario) {
         alert('Selecione um horário');
@@ -170,10 +204,11 @@ function iniciarContagem() {
 
     contagemAtual = {
         id: Date.now(),
-        matricula: matricula,
-        operador: operador,
-        veiculo: veiculo,
         data: formatarData(data),
+        carro: carro,
+        matricula: matricula,
+        maquina: maquina,
+        operador: operador,
         horario: horario,
         embarques: [],
         finalizada: false,
@@ -514,7 +549,7 @@ function exibirContagens(filtro = '') {
 
     const contagensFiltradas = contagens.filter(c => 
         c.data.toLowerCase().includes(filtro.toLowerCase()) ||
-        c.veiculo.toLowerCase().includes(filtro.toLowerCase())
+        c.carro.toLowerCase().includes(filtro.toLowerCase())
     ).reverse();
 
     if (contagensFiltradas.length === 0) {
@@ -541,18 +576,19 @@ function exibirContagens(filtro = '') {
         
         return `
             <div class="contagem-item" onclick="mostrarDetalhes(${contagem.id})">
+                <h3>${contagem.data} - ${contagem.horario}</h3>    
+                <p>Carro: ${contagem.carro}</p>
                 <p>Matrícula: ${contagem.matricula}</p>
+                <p>Máquina: ${contagem.maquina}</p>
                 <p>Operador: ${contagem.operador}</p>
-                <p>Veículo: ${contagem.veiculo}</p>
-                <h3>${contagem.data} - ${contagem.horario}</h3>
-                <p>Câmeras: ${contagem.totalCameras} | Visual: ${contagem.totalVisual}</p>
+                <p>Visual: ${contagem.totalVisual} | Câmeras: ${contagem.totalCameras}</p>
                 <p class="${statusClasse}">${statusTexto}</p>
                 ${botaoRetomar}
-                <button class="btn btn-success btn-small" onclick="event.stopPropagation(); alert('Função em Desenvolvimento')">Exportar Excel - LibreOffice</button>
+                <button class="btn btn-success btn-small" onclick="event.stopPropagation(); exportarContagem(${contagem.id})">Exportar Excel - LibreOffice</button>
                 <button class="btn btn-danger btn-small" onclick="event.stopPropagation(); excluirContagem(${contagem.id})">Excluir</button>
             </div>
         `;
-    }).join(''); // exportarContagem(${contagem.id})
+    }).join('');
 }
 
 // Filtrar contagens
@@ -593,7 +629,7 @@ function mostrarDetalhes(id) {
     document.getElementById('conteudoModal').innerHTML = `
         <p><strong>Matícula:</strong> ${contagem.matricula}</p>
         <p><strong>Operador:</strong> ${contagem.operador}</p>
-        <p><strong>Veículo:</strong> ${contagem.veiculo}</p>
+        <p><strong>Carro:</strong> ${contagem.carro}</p>
         <p><strong>Data:</strong> ${contagem.data}</p>
         <p><strong>Horário:</strong> ${contagem.horario}</p>
         <p><strong>Status:</strong> ${statusTexto}</p>
@@ -632,70 +668,186 @@ function focarSeNecessario(elementId) {
     }
 }
 
-// Exportar contagem para ODS
-function exportarContagem(id) {
+// Vefifica se um elemento precisa de foco
+function focarSeNecessario(elementId) {
+    const elemento = document.getElementById(elementId);
+    if (document.activeElement !== elemento) {
+        elemento.focus();
+    }
+}
+
+function normalizarTexto(texto) {
+    if (!texto) return '';
+    
+    return texto
+        .toUpperCase()  // Converte para maiúsculas
+        .normalize('NFD')  // Separa os caracteres dos acentos
+        .replace(/[\u0300-\u036f]/g, '');  // Remove os acentos
+}
+
+// Exportar contagem para Excel
+async function exportarContagem(id) {
     const contagens = carregarContagens();
     const contagem = contagens.find(c => c.id === id);
-    
+
     if (!contagem) {
         alert('Contagem não encontrada');
         return;
     }
-    
-    // Calcular acurácia
-    let acuracia = 0;
-    if (contagem.totalVisual > 0) {
-        acuracia = Math.round((contagem.totalCameras / contagem.totalVisual) * 100);
-    }
-    
-    // Preparar dados da planilha
-    const dados = [];
-    
-    // Cabeçalho com informações gerais
-    dados.push(['RELATÓRIO DE CONTAGEM DE PASSAGEIROS']);
-    dados.push([]);
-    dados.push(['Data:', contagem.data]);
-    dados.push(['Horário:', contagem.horario]);
-    dados.push(['Veículo:', contagem.veiculo]);
-    dados.push(['Status:', contagem.finalizada ? 'Finalizada' : (contagem.pausada ? 'Pausada' : 'Em andamento')]);
-    dados.push([]);
-    dados.push(['TOTAIS']);
-    dados.push(['Total Câmeras:', contagem.totalCameras]);
-    dados.push(['Total Visual:', contagem.totalVisual]);
-    dados.push(['Percentual:', acuracia + '%']);
-    dados.push(['Total de Embarques:', contagem.embarques.length]);
-    dados.push([]);
-    
-    // Cabeçalho da tabela de embarques
-    dados.push(['Embarque', 'Câmeras', 'Visual', 'Diferença']);
-    
-    // Dados dos embarques
-    contagem.embarques.forEach(embarque => {
-        const diferenca = embarque.cameras - embarque.visual;
-        dados.push([
-            embarque.numero,
-            embarque.cameras,
-            embarque.visual,
-            diferenca
-        ]);
-    });
-    
+
+    // Determinar período (Manhã ou Tarde) baseado no horário
+    const horario = contagem.horario;
+    const hora = parseInt(horario.split(':')[0]);
+    const periodo = hora <= 12 ? 'Manhã' : 'Tarde';
+
+    // Converter data para formato por extenso
+    const [dia, mes, ano] = contagem.data.split('/');
+    const meses = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 
+                   'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
+    const dataExtenso = `${dia} de ${meses[parseInt(mes) - 1]} de ${ano}`;
+
     // Criar workbook e worksheet
-    const wb = XLSX.utils.book_new();
-    const ws = XLSX.utils.aoa_to_sheet(dados);
-    
-    // Definir largura das colunas
-    ws['!cols'] = [
-        { wch: 20 },
-        { wch: 15 },
-        { wch: 15 },
-        { wch: 15 }
+    const workbook = new ExcelJS.Workbook();
+    const worksheet = workbook.addWorksheet('Contagem');
+
+    // Definir largura de todas as colunas (15)
+    worksheet.columns = [
+        { width: 15 }, { width: 15 }, { width: 15 }, { width: 15 },
+        { width: 15 }, { width: 15 }, { width: 15 }, { width: 9 },
+        { width: 15 }, { width: 15 }, { width: 15 }, { width: 9 }
     ];
+
+    // Linha 1: célula vazia + data mesclada
+    worksheet.getCell('A1').value = '';
+    worksheet.getCell('B1').value = dataExtenso;
+    worksheet.mergeCells('B1:L1');
     
-    // Adicionar worksheet ao workbook
-    XLSX.utils.book_append_sheet(wb, ws, 'Contagem');
+    // Estilo da data (B1:L1) - cinza 25%
+    const cellData = worksheet.getCell('B1');
+    cellData.fill = {
+        type: 'pattern',
+        pattern: 'solid',
+        fgColor: { argb: 'FFBFBFBF' }
+    };
+    cellData.alignment = { horizontal: 'center', vertical: 'middle' };
+
+    // Linha 2: cabeçalhos
+    const cabecalhos = [
+        'Carro', 'Matrícula', 'Máquina', 'Operador',
+        'Horário - Manhã', 'Contagem Visual', 'Contagem Carro', 'Margem',
+        'Horário - Tarde', 'Contagem Visual', 'Contagem Carro', 'Margem'
+    ];
+
+    cabecalhos.forEach((texto, index) => {
+        const cell = worksheet.getCell(2, index + 1);
+        cell.value = texto;
+        cell.fill = {
+            type: 'pattern',
+            pattern: 'solid',
+            fgColor: { argb: 'FFD9D9D9' }
+        };
+        cell.alignment = { horizontal: 'center', vertical: 'middle' };
+        cell.border = {
+            top: { style: 'thin' },
+            left: { style: 'thin' },
+            bottom: { style: 'thin' },
+            right: { style: 'thin' }
+        };
+    });
+
+    // Linha 3: dados
+    const row3 = worksheet.getRow(3);
     
-    // Gerar arquivo ODS
-    const nomeArquivo = `Contagem_${contagem.veiculo}_${contagem.data.replace(/\//g, '-')}.ods`;
-    XLSX.writeFile(wb, nomeArquivo, { bookType: 'ods' });
+    // Coluna A (Carro) com cinza 15%
+    const cellA3 = worksheet.getCell('A3');
+    cellA3.value = Number(contagem.carro) || contagem.carro;
+    cellA3.fill = {
+        type: 'pattern',
+        pattern: 'solid',
+        fgColor: { argb: 'FFD9D9D9' }
+    };
+    cellA3.alignment = { horizontal: 'center', vertical: 'middle' };
+    cellA3.border = {
+        top: { style: 'thin' },
+        left: { style: 'thin' },
+        bottom: { style: 'thin' },
+        right: { style: 'thin' }
+    };
+
+    // Demais colunas (B, C, D)
+    worksheet.getCell('B3').value = Number(contagem.matricula) || contagem.matricula;
+    worksheet.getCell('C3').value = contagem.maquina;
+    worksheet.getCell('D3').value = contagem.operador;
+
+    // Aplicar estilo nas colunas B, C, D
+    ['B3', 'C3', 'D3'].forEach(cellRef => {
+        const cell = worksheet.getCell(cellRef);
+        cell.alignment = { horizontal: 'center', vertical: 'middle' };
+        cell.border = {
+            top: { style: 'thin' },
+            left: { style: 'thin' },
+            bottom: { style: 'thin' },
+            right: { style: 'thin' }
+        };
+    });
+
+    // Dados do período (Manhã ou Tarde)
+    if (periodo === 'Manhã') {
+        // Preencher Manhã (E3:H3)
+        worksheet.getCell('E3').value = contagem.horario;
+        worksheet.getCell('F3').value = contagem.totalVisual;
+        worksheet.getCell('G3').value = contagem.totalCameras;
+        worksheet.getCell('H3').value = { formula: '=IFERROR((G3/F3),"")' };
+        worksheet.getCell('H3').numFmt = '0%';
+
+        // Estilizar células
+        ['E3', 'F3', 'G3', 'H3', 'I3', 'J3', 'K3', 'L3'].forEach(cellRef => {
+            const cell = worksheet.getCell(cellRef);
+            cell.alignment = { horizontal: 'center', vertical: 'middle' };
+            cell.border = {
+                top: { style: 'thin' },
+                left: { style: 'thin' },
+                bottom: { style: 'thin' },
+                right: { style: 'thin' }
+            };
+        });
+    } else {
+        // Deixar Manhã vazia (E3:H3) - sem bordas
+        ['E3', 'F3', 'G3', 'H3'].forEach(cellRef => {
+            const cell = worksheet.getCell(cellRef);
+            cell.value = '';
+            cell.alignment = { horizontal: 'center', vertical: 'middle' };
+        });
+
+        // Preencher Tarde (I3:L3)
+        worksheet.getCell('I3').value = contagem.horario;
+        worksheet.getCell('J3').value = contagem.totalVisual;
+        worksheet.getCell('K3').value = contagem.totalCameras;
+        worksheet.getCell('L3').value = { formula: '=IFERROR((K3/J3),"")' };
+        worksheet.getCell('L3').numFmt = '0%';
+
+        // Estilizar células
+        ['E3', 'F3', 'G3', 'H3', 'I3', 'J3', 'K3', 'L3'].forEach(cellRef => {
+            const cell = worksheet.getCell(cellRef);
+            cell.alignment = { horizontal: 'center', vertical: 'middle' };
+            cell.border = {
+                top: { style: 'thin' },
+                left: { style: 'thin' },
+                bottom: { style: 'thin' },
+                right: { style: 'thin' }
+            };
+        });
+    }
+
+    // Gerar arquivo
+    const buffer = await workbook.xlsx.writeBuffer();
+    const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `OP.${normalizarTexto(contagem.operador)}.MAQ.${contagem.maquina}.CARRO.${contagem.carro}.DATA.${contagem.data.replace(/\//g, '-')}.xlsx`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    window.URL.revokeObjectURL(url);
 }

@@ -21,11 +21,10 @@ let modoInsercaoCameras = 'teclado';
 let modoInsercaoVisual = 'teclado';
 let campoAtualFocado = null;
 
-// Inicializar data e horário atual
-document.addEventListener('DOMContentLoaded', () => {
+// Função de inicialização
+function inicializarApp() {
     carregarContagens();
     
-    // Adicionar eventos de Enter nos campos
     const inputData = document.getElementById('inputData');
     const inputCarro = document.getElementById('inputCarro');
     const inputMatricula = document.getElementById('inputMatricula');
@@ -33,13 +32,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const inputOperador = document.getElementById('inputOperador');
     const inputHorario = document.getElementById('inputHorario');
 
-    // Array com ordem dos campos
+    if (!inputData || !inputCarro) return; // Se elementos não existem, sair
+
     const campos = [inputData, inputCarro, inputMatricula, inputMaquina, inputOperador, inputHorario];
 
-    // Adicionar navegação com setas para todos os campos
     campos.forEach((campo, index) => {
         campo.addEventListener('keydown', function(e) {
-            // Seta para baixo - vai para o próximo campo
             if (e.key === 'ArrowDown') {
                 e.preventDefault();
                 const proximoIndex = index + 1;
@@ -48,7 +46,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             }
             
-            // Seta para cima - volta para o campo anterior
             if (e.key === 'ArrowUp') {
                 e.preventDefault();
                 const anteriorIndex = index - 1;
@@ -59,7 +56,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // Enter no campo Data move para Carro
     inputData.addEventListener('keypress', function(e) {
         if (e.key === 'Enter') {
             e.preventDefault();
@@ -67,7 +63,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Enter no campo Carro move para Matrícula
     inputCarro.addEventListener('keypress', function(e) {
         if (e.key === 'Enter') {
             e.preventDefault();
@@ -75,7 +70,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Enter no campo Matrícula move para Máquina
     inputMatricula.addEventListener('keypress', function(e) {
         if (e.key === 'Enter') {
             e.preventDefault();
@@ -83,7 +77,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Enter no campo Máquina move para Operador
     inputMaquina.addEventListener('keypress', function(e) {
         if (e.key === 'Enter') {
             e.preventDefault();
@@ -91,7 +84,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Enter no campo Operador move para Horário
     inputOperador.addEventListener('keypress', function(e) {
         if (e.key === 'Enter') {
             e.preventDefault();
@@ -99,7 +91,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
     
-    // Enter no campo Horário inicia a contagem
     inputHorario.addEventListener('keypress', function(e) {
         if (e.key === 'Enter') {
             e.preventDefault();
@@ -107,10 +98,16 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Configurar eventos de teclado e foco nos displays
     configurarEventosDisplay('visual');
     configurarEventosDisplay('cameras');
-});
+}
+
+// Executar quando DOM estiver pronto
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', inicializarApp);
+} else {
+    inicializarApp();
+}
 
 // Configurar eventos de teclado e foco
 function configurarEventosDisplay(tipo) {

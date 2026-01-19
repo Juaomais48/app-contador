@@ -43,10 +43,6 @@
                 <input type="text" id="inputOperador" placeholder="(Opcional)">
             </div>
 
-            <div class="form-group">
-                <label>Horário</label>
-                <input type="time" id="inputHorario" step="1" required>
-            </div>
             <button class="btn btn-primary" style="margin-bottom: 10px;" onclick="iniciarContagem()">Iniciar Contagem</button>
             <button class="btn btn-tertiary" onclick="mostrarTela('telaInicial')">Voltar</button>
         </div>
@@ -54,7 +50,11 @@
         <!-- Tela de Contagem -->
         <div id="telaContagem" class="screen">
             <div class="info-contagem">
-                <h2 id="embarqueAtual">Embarque 1</h2>
+                <div class="embarque-navegacao">
+                    <button class="btn-seta" id="btnSetaEsquerda" onclick="navegarEmbarque(-1)" style="display: none;">◀</button>
+                    <h2 id="embarqueAtual">Embarque 1</h2>
+                    <button class="btn-seta" id="btnSetaDireita" onclick="navegarEmbarque(1)" style="display: none;">▶</button>
+                </div>
             </div>
 
             <div class="contagem-container">
@@ -141,6 +141,31 @@
         </div>
     </div>
 
+    <!-- Modal Horário de Início -->
+    <div id="modalHorarioInicio" class="modal">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <h2 style="text-align: center;">Horário de Início</h2>
+            <p style="margin-bottom: 20px; text-align: center; color: #666;">Horário que a primeira pessoa embarca no veículo. (colaboradores também participam da contagem)</p>
+            <div class="form-group">
+                <input type="time" id="inputHorarioInicio" step="1" required style="font-size: 24px; text-align: center;">
+            </div>
+            <button class="btn btn-primary" onclick="confirmarHorarioInicio()">Confirmar</button>
+        </div>
+    </div>
+
+    <!-- Modal Horário de Término -->
+    <div id="modalHorarioTermino" class="modal">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <h2 style="text-align: center;">Horário de Término</h2>
+            <p style="margin-bottom: 20px; text-align: center; color: #666;">Informe o horário de término da contagem</p>
+            <div class="form-group">
+                <input type="time" id="inputHorarioTermino" step="1" required style="font-size: 24px; text-align: center;">
+            </div>
+            <button class="btn btn-primary" onclick="confirmarHorarioTermino()">Confirmar e Finalizar</button>
+            <button class="btn btn-tertiary" onclick="fecharModal('modalHorarioTermino')" style="margin-top: 10px;">Cancelar</button>
+        </div>
+    </div>
+
     <!-- Modal de Detalhes -->
     <div id="modalDetalhes" class="modal" onclick="fecharModal('modalDetalhes')">
         <div class="modal-content" onclick="event.stopPropagation()">
@@ -173,7 +198,7 @@
             </div>
 
             <button class="btn btn-warning" style="margin-top: 20px; margin-bottom: 10px;" onclick="pausarContagem()">Pausar Contagem</button>
-            <button class="btn btn-primary" style="margin-bottom: 10px;" onclick="finalizarContagem()">Finalizar Contagem</button>
+            <button class="btn btn-primary" style="margin-bottom: 10px;" onclick="solicitarFinalizacao()">Finalizar Contagem</button>
         </div>
     </div>
 

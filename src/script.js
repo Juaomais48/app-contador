@@ -6,13 +6,15 @@ let contagemAtual = {
     matricula: '',
     maquina: '',  
     operador: '',
-    horario: '',
+    horarioInicio: '',
+    horarioTermino: '',
     embarques: [],
     finalizada: false,
     pausada: false
 };
 
 let embarqueAtualNumero = 1;
+let embarqueVisualizadoNumero = 1;
 let valorCameras = '0';
 let valorVisual = '0';
 let valorCamerasConfirmado = null;
@@ -30,11 +32,10 @@ function inicializarApp() {
     const inputMatricula = document.getElementById('inputMatricula');
     const inputMaquina = document.getElementById('inputMaquina');
     const inputOperador = document.getElementById('inputOperador');
-    const inputHorario = document.getElementById('inputHorario');
 
-    if (!inputData || !inputCarro) return; // Se elementos não existem, sair
+    if (!inputData || !inputCarro) return;
 
-    const campos = [inputData, inputCarro, inputMatricula, inputMaquina, inputOperador, inputHorario];
+    const campos = [inputData, inputCarro, inputMatricula, inputMaquina, inputOperador];
 
     campos.forEach((campo, index) => {
         campo.addEventListener('keydown', function(e) {
@@ -87,16 +88,31 @@ function inicializarApp() {
     inputOperador.addEventListener('keypress', function(e) {
         if (e.key === 'Enter') {
             e.preventDefault();
-            inputHorario.focus();
-        }
-    });
-    
-    inputHorario.addEventListener('keypress', function(e) {
-        if (e.key === 'Enter') {
-            e.preventDefault();
             iniciarContagem();
         }
     });
+
+    // Eventos para horários
+    const inputHorarioInicio = document.getElementById('inputHorarioInicio');
+    const inputHorarioTermino = document.getElementById('inputHorarioTermino');
+
+    if (inputHorarioInicio) {
+        inputHorarioInicio.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                confirmarHorarioInicio();
+            }
+        });
+    }
+
+    if (inputHorarioTermino) {
+        inputHorarioTermino.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                confirmarHorarioTermino();
+            }
+        });
+    }
 
     configurarEventosDisplay('visual');
     configurarEventosDisplay('cameras');
@@ -113,13 +129,11 @@ if (document.readyState === 'loading') {
 function configurarEventosDisplay(tipo) {
     const display = document.getElementById(`display${tipo.charAt(0).toUpperCase() + tipo.slice(1)}`);
     
-    // Evento de foco
     display.addEventListener('focus', () => {
         campoAtualFocado = tipo;
         display.classList.add('display-focado');
     });
     
-    // Evento de perda de foco
     display.addEventListener('blur', () => {
         if (campoAtualFocado === tipo) {
             campoAtualFocado = null;
@@ -127,38 +141,32 @@ function configurarEventosDisplay(tipo) {
         display.classList.remove('display-focado');
     });
     
-    // Evento de tecla pressionada
     display.addEventListener('keydown', (e) => {
         const confirmado = tipo === 'cameras' ? valorCamerasConfirmado : valorVisualConfirmado;
         
-        // Se já confirmado, não permite edição
         if (confirmado !== null && e.key !== 'Enter') {
             e.preventDefault();
             return;
         }
         
-        // Enter confirma o valor
         if (e.key === 'Enter') {
             e.preventDefault();
             confirmarCampo(tipo);
             return;
         }
         
-        // Backspace apaga o último dígito
         if (e.key === 'Backspace') {
             e.preventDefault();
             apagarUltimoDigito(tipo);
             return;
         }
         
-        // Números de 0-9
         if (e.key >= '0' && e.key <= '9') {
             e.preventDefault();
             adicionarDigito(tipo, e.key);
             return;
         }
         
-        // Bloqueia outras teclas
         e.preventDefault();
     });
 }
@@ -182,7 +190,6 @@ function iniciarContagem() {
     const matricula = document.getElementById('inputMatricula').value.trim();
     const maquina = document.getElementById('inputMaquina').value.trim();
     const operador = document.getElementById('inputOperador').value.trim();
-    const horario = document.getElementById('inputHorario').value;
 
     if (!data) {
         alert('Selecione uma data');
@@ -191,11 +198,6 @@ function iniciarContagem() {
 
     if (!carro) {
         alert('Digite o número do carro');
-        return;
-    } 
-
-    if (!horario) {
-        alert('Selecione um horário');
         return;
     }
 
@@ -206,7 +208,8 @@ function iniciarContagem() {
         matricula: matricula,
         maquina: maquina,
         operador: operador,
-        horario: horario,
+        horarioInicio: '',
+        horarioTermino: '',
         embarques: [],
         finalizada: false,
         pausada: false,
@@ -215,8 +218,69 @@ function iniciarContagem() {
     };
 
     embarqueAtualNumero = 1;
+    embarqueVisualizadoNumero = 1;
     resetarCampos();
     mostrarTela('telaContagem');
+    
+    // Mostrar popup de horário de início
+    mostrarPopupHorarioInicio();
+}
+
+// Mostrar popup de horário de início
+function mostrarPopupHorarioInicio() {
+    const modal = document.getElementById('modalHorarioInicio');
+    const input = document.getElementById('inputHorarioInicio');
+    
+    modal.classList.add('active');
+    setTimeout(() => input.focus(), 100);
+}
+
+// Confirmar horário de início
+function confirmarHorarioInicio() {
+    const horario = document.getElementById('inputHorarioInicio').value;
+    
+    if (!horario) {
+        alert('Informe o horário de início');
+        return;
+    }
+    
+    contagemAtual.horarioInicio = horario;
+    fecharModal('modalHorarioInicio');
+    
+    setTimeout(() => {
+        focarSeNecessario('displayVisual');
+    }, 100);
+}
+
+// Solicitar finalização (mostra popup de horário de término)
+function solicitarFinalizacao() {
+    if (contagemAtual.embarques.length === 0) {
+        alert('Adicione pelo menos um embarque antes de finalizar');
+        return;
+    }
+    
+    fecharModal('modalMenu');
+    
+    const modal = document.getElementById('modalHorarioTermino');
+    const input = document.getElementById('inputHorarioTermino');
+    
+    modal.classList.add('active');
+    setTimeout(() => input.focus(), 100);
+}
+
+// Confirmar horário de término e finalizar
+function confirmarHorarioTermino() {
+    const horario = document.getElementById('inputHorarioTermino').value;
+    
+    if (!horario) {
+        alert('Informe o horário de término');
+        return;
+    }
+    
+    contagemAtual.horarioTermino = horario;
+    fecharModal('modalHorarioTermino');
+    
+    finalizarContagem();
 }
 
 // Retomar contagem pausada
@@ -231,11 +295,66 @@ function retomarContagem(id) {
     
     contagemAtual = { ...contagem };
     embarqueAtualNumero = contagem.embarques.length + 1;
+    embarqueVisualizadoNumero = embarqueAtualNumero;
     
     resetarCampos();
+    atualizarBotoesNavegacao();
     
     document.getElementById('embarqueAtual').textContent = `Embarque ${embarqueAtualNumero}`;
     mostrarTela('telaContagem');
+}
+
+// Navegar entre embarques
+function navegarEmbarque(direcao) {
+    const novoNumero = embarqueVisualizadoNumero + direcao;
+    
+    // Validar limites
+    if (novoNumero < 1 || novoNumero > contagemAtual.embarques.length) {
+        return;
+    }
+    
+    embarqueVisualizadoNumero = novoNumero;
+    
+    // Carregar dados do embarque
+    const embarque = contagemAtual.embarques[embarqueVisualizadoNumero - 1];
+    
+    valorCameras = String(embarque.cameras);
+    valorVisual = String(embarque.visual);
+    valorCamerasConfirmado = embarque.cameras;
+    valorVisualConfirmado = embarque.visual;
+    
+    document.getElementById('displayCameras').value = valorCameras;
+    document.getElementById('displayVisual').value = valorVisual;
+    document.getElementById('displayCameras').classList.add('valor-confirmado');
+    document.getElementById('displayVisual').classList.add('valor-confirmado');
+    document.getElementById('btnCorrecaoCameras').style.display = 'inline-block';
+    document.getElementById('btnCorrecaoVisual').style.display = 'inline-block';
+    document.querySelector('.campo-contagem.cameras .btn-success').style.display = 'none';
+    document.querySelector('.campo-contagem.visual .btn-success').style.display = 'none';
+    
+    document.getElementById('embarqueAtual').textContent = `Embarque ${embarqueVisualizadoNumero}`;
+    
+    atualizarBotoesNavegacao();
+}
+
+// Atualizar visibilidade dos botões de navegação
+function atualizarBotoesNavegacao() {
+    const btnEsquerda = document.getElementById('btnSetaEsquerda');
+    const btnDireita = document.getElementById('btnSetaDireita');
+    
+    // Botão esquerda (voltar ao próximo embarque) - só aparece se não estiver no último
+    if (embarqueVisualizadoNumero < embarqueAtualNumero) {
+        btnEsquerda.style.display = 'inline-block';
+    } else {
+        btnEsquerda.style.display = 'none';
+    }
+    
+    // Botão direita (voltar ao embarque anterior) - só aparece se tiver embarques confirmados e não estiver no primeiro
+    if (contagemAtual.embarques.length > 0 && embarqueVisualizadoNumero > 1) {
+        btnDireita.style.display = 'inline-block';
+    } else {
+        btnDireita.style.display = 'none';
+    }
 }
 
 // Resetar campos
@@ -425,32 +544,63 @@ function corrigirCampo(tipo) {
 // Verificar e criar embarque
 function verificarECriarEmbarque() {
     if (valorCamerasConfirmado !== null && valorVisualConfirmado !== null) {
-        const embarque = {
-            numero: embarqueAtualNumero,
-            cameras: valorCamerasConfirmado,
-            visual: valorVisualConfirmado,
-            timestamp: Date.now()
-        };
+        // Se estamos editando um embarque existente
+        if (embarqueVisualizadoNumero <= contagemAtual.embarques.length) {
+            const embarque = contagemAtual.embarques[embarqueVisualizadoNumero - 1];
+            embarque.cameras = valorCamerasConfirmado;
+            embarque.visual = valorVisualConfirmado;
+            
+            // Voltar ao embarque atual (não confirmado)
+            embarqueVisualizadoNumero = embarqueAtualNumero;
+            valorCameras = '0';
+            valorVisual = '0';
+            valorCamerasConfirmado = null;
+            valorVisualConfirmado = null;
+            
+            document.getElementById('displayCameras').value = '0';
+            document.getElementById('displayVisual').value = '0';
+            document.getElementById('displayCameras').classList.remove('valor-confirmado');
+            document.getElementById('displayVisual').classList.remove('valor-confirmado');
+            document.getElementById('btnCorrecaoCameras').style.display = 'none';
+            document.getElementById('btnCorrecaoVisual').style.display = 'none';
+            document.querySelector('.campo-contagem.cameras .btn-success').style.display = 'inline-block';
+            document.querySelector('.campo-contagem.visual .btn-success').style.display = 'inline-block';
+            
+            document.getElementById('embarqueAtual').textContent = `Embarque ${embarqueAtualNumero}`;
+            
+            atualizarBotoesNavegacao();
+        } else {
+            // Criar novo embarque
+            const embarque = {
+                numero: embarqueAtualNumero,
+                cameras: valorCamerasConfirmado,
+                visual: valorVisualConfirmado,
+                timestamp: Date.now()
+            };
 
-        contagemAtual.embarques.push(embarque);
-        
-        embarqueAtualNumero++;
-        valorCameras = '0';
-        valorVisual = '0';
-        valorCamerasConfirmado = null;
-        valorVisualConfirmado = null;
-        
-        document.getElementById('displayCameras').value = '0';
-        document.getElementById('displayVisual').value = '0';
-        document.getElementById('displayCameras').classList.remove('valor-confirmado');
-        document.getElementById('displayVisual').classList.remove('valor-confirmado');
-        document.getElementById('btnCorrecaoCameras').style.display = 'none';
-        document.getElementById('btnCorrecaoVisual').style.display = 'none';
+            contagemAtual.embarques.push(embarque);
+            
+            embarqueAtualNumero++;
+            embarqueVisualizadoNumero = embarqueAtualNumero;
+            valorCameras = '0';
+            valorVisual = '0';
+            valorCamerasConfirmado = null;
+            valorVisualConfirmado = null;
+            
+            document.getElementById('displayCameras').value = '0';
+            document.getElementById('displayVisual').value = '0';
+            document.getElementById('displayCameras').classList.remove('valor-confirmado');
+            document.getElementById('displayVisual').classList.remove('valor-confirmado');
+            document.getElementById('btnCorrecaoCameras').style.display = 'none';
+            document.getElementById('btnCorrecaoVisual').style.display = 'none';
 
-        document.querySelector('.campo-contagem.cameras .btn-success').style.display = 'inline-block';
-        document.querySelector('.campo-contagem.visual .btn-success').style.display = 'inline-block';
-        
-        document.getElementById('embarqueAtual').textContent = `Embarque ${embarqueAtualNumero}`;
+            document.querySelector('.campo-contagem.cameras .btn-success').style.display = 'inline-block';
+            document.querySelector('.campo-contagem.visual .btn-success').style.display = 'inline-block';
+            
+            document.getElementById('embarqueAtual').textContent = `Embarque ${embarqueAtualNumero}`;
+            
+            atualizarBotoesNavegacao();
+        }
 
         setTimeout(() => {
             focarSeNecessario('displayVisual');
@@ -482,28 +632,13 @@ function pausarContagem() {
 
 // Finalizar contagem
 function finalizarContagem() {
-    if (contagemAtual.embarques.length === 0) {
-        alert('Adicione pelo menos um embarque antes de finalizar');
-        return;
-    }
-
-    // Se estava pausada, atualizar; senão, criar nova
-    if (contagemAtual.pausada) {
-        atualizarContagem(contagemAtual.id);
-    }
-
     contagemAtual.finalizada = true;
     contagemAtual.pausada = false;
     contagemAtual.totalCameras = contagemAtual.embarques.reduce((sum, p) => sum + p.cameras, 0);
     contagemAtual.totalVisual = contagemAtual.embarques.reduce((sum, p) => sum + p.visual, 0);
 
-    if (!contagemAtual.pausada) {
-        salvarContagem(contagemAtual);
-    } else {
-        atualizarContagem(contagemAtual.id);
-    }
+    salvarContagem(contagemAtual);
     
-    fecharModal('modalMenu');
     mostrarTela('telaLista');
     mostrarDetalhes(contagemAtual.id);
 }
@@ -512,7 +647,6 @@ function finalizarContagem() {
 function salvarContagem(contagem) {
     let contagens = JSON.parse(localStorage.getItem('contagens') || '[]');
     
-    // Se já existe (pausada), atualizar
     const index = contagens.findIndex(c => c.id === contagem.id);
     if (index !== -1) {
         contagens[index] = contagem;
@@ -571,9 +705,11 @@ function exibirContagens(filtro = '') {
             statusClasse = 'status-andamento';
         }
         
+        const horarios = contagem.horarioInicio ? `${contagem.horarioInicio}${contagem.horarioTermino ? ' - ' + contagem.horarioTermino : ''}` : '';
+        
         return `
             <div class="contagem-item" onclick="mostrarDetalhes(${contagem.id})">
-                <h3>${contagem.data} - ${contagem.horario}</h3>    
+                <h3>${contagem.data}${horarios ? ' - ' + horarios : ''}</h3>    
                 <p>Carro: ${contagem.carro}</p>
                 <p>Matrícula: ${contagem.matricula}</p>
                 <p>Máquina: ${contagem.maquina}</p>
@@ -604,13 +740,11 @@ function mostrarDetalhes(id) {
         `Embarque ${p.numero}: Câmeras=${p.cameras}, Visual=${p.visual}`
     ).join('\n');
 
-    // Calcular acurácia do cameras
     let acuracia = 0;
     if (contagem.totalVisual > 0) {
         acuracia = Math.round((contagem.totalCameras / contagem.totalVisual) * 100);
     }
 
-    // Determinar classe de acurácia para estilização
     let classeAcuracia = '';
     if (acuracia >= 95 && acuracia <= 105) {
         classeAcuracia = 'acuracia-excelente';
@@ -623,16 +757,14 @@ function mostrarDetalhes(id) {
     let statusTexto = contagem.finalizada ? 'Finalizada' : (contagem.pausada ? 'Pausada' : 'Em andamento');
 
     document.getElementById('conteudoModal').innerHTML = `
-        <p><strong>Matícula:</strong> ${contagem.matricula}</p>
-        <p><strong>Operador:</strong> ${contagem.operador}</p>
         <p><strong>Carro:</strong> ${contagem.carro}</p>
         <p><strong>Data:</strong> ${contagem.data}</p>
-        <p><strong>Horário:</strong> ${contagem.horario}</p>
-        <p><strong>Status:</strong> ${statusTexto}</p>
-        <p><strong>Total Câmeras:</strong> ${contagem.totalCameras}</p>
+        <p><strong>Horário Início:</strong> ${contagem.horarioInicio || 'Não informado'}</p>
+        <p><strong>Horário Término:</strong> ${contagem.horarioTermino || 'Não informado'}</p>
         <p><strong>Total Visual:</strong> ${contagem.totalVisual}</p>
+        <p><strong>Total Câmeras:</strong> ${contagem.totalCameras}</p>
         <p><strong>Percentual:</strong> <span class="${classeAcuracia}">${acuracia}%</span></p>
-        <p><strong>Embarques:</strong> ${contagem.embarques.length}</p>
+        <p><strong>Status:</strong> ${statusTexto}</p>
         <br>
         <pre>${embarquesDetalhes}</pre>
     `;
@@ -656,18 +788,10 @@ function excluirContagem(id) {
     exibirContagens();
 }
 
-// Vefifica se um elemento precisa de foco
+// Verifica se um elemento precisa de foco
 function focarSeNecessario(elementId) {
     const elemento = document.getElementById(elementId);
-    if (document.activeElement !== elemento) {
-        elemento.focus();
-    }
-}
-
-// Vefifica se um elemento precisa de foco
-function focarSeNecessario(elementId) {
-    const elemento = document.getElementById(elementId);
-    if (document.activeElement !== elemento) {
+    if (elemento && document.activeElement !== elemento) {
         elemento.focus();
     }
 }

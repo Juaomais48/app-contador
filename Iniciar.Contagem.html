@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contador de Passageiros</title>
+    <link rel="stylesheet" href="https://juaomais48.github.io/app-contador/style.css">
+    <script src="https://juaomais48.github.io/app-contador/exceljs.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <!-- Tela Inicial -->
+        <div id="telaInicial" class="screen active">
+            <h1>Contador de Passageiros</h1>
+            <button class="btn btn-primary" style="margin-bottom: 10px;" onclick="mostrarTela('telaNova')">Criar Contagem</button>
+            <button class="btn btn-secondary" style="margin-bottom: 10px;" onclick="mostrarTela('telaLista')">Lista de Contagens</button>
+        </div>
+
+        <!-- Tela Nova Contagem -->
+        <div id="telaNova" class="screen">
+            <h1>Nova Contagem</h1>
+            <div class="form-group">
+                <label>Data</label>
+                <input type="date" id="inputData" required>
+            </div>
+
+            <div class="form-group">
+                <label>Número do Carro</label>
+                <input type="text" id="inputCarro" placeholder="Digite o número do carro" required>
+            </div>
+
+            <div class="form-group">
+                <label>Matricula</label>
+                <input type="text" id="inputMatricula" placeholder="(Opcional)">
+            </div>
+
+            <div class="form-group">
+                <label>Máquina</label>
+                <input type="text" id="inputMaquina" placeholder="(Opcional)">
+            </div>
+
+            <div class="form-group">
+                <label>Nome do Operador</label>
+                <input type="text" id="inputOperador" placeholder="(Opcional)">
+            </div>
+
+            <div class="form-group">
+                <label>Horário</label>
+                <input type="time" id="inputHorario" step="1" required>
+            </div>
+            <button class="btn btn-primary" style="margin-bottom: 10px;" onclick="iniciarContagem()">Iniciar Contagem</button>
+            <button class="btn btn-tertiary" onclick="mostrarTela('telaInicial')">Voltar</button>
+        </div>
+
+        <!-- Tela de Contagem -->
+        <div id="telaContagem" class="screen">
+            <div class="info-contagem">
+                <h2 id="embarqueAtual">Embarque 1</h2>
+            </div>
+
+            <div class="contagem-container">
+                <!-- Campo Visual -->
+                <div class="campo-contagem visual">
+                    <div class="campo-header">
+                        <h3>Visual</h3>
+                        <input type="text" class="display-valor" id="displayVisual" value="0" readonly>
+                    </div>
+                    
+                    <!-- Teclado Numérico -->
+                    <div class="teclado-numerico" id="tecladoVisual">
+                        <button class="tecla" onclick="adicionarDigito('visual', '7')">7</button>
+                        <button class="tecla" onclick="adicionarDigito('visual', '8')">8</button>
+                        <button class="tecla" onclick="adicionarDigito('visual', '9')">9</button>
+                        <button class="tecla" onclick="adicionarDigito('visual', '4')">4</button>
+                        <button class="tecla" onclick="adicionarDigito('visual', '5')">5</button>
+                        <button class="tecla" onclick="adicionarDigito('visual', '6')">6</button>
+                        <button class="tecla" onclick="adicionarDigito('visual', '1')">1</button>
+                        <button class="tecla" onclick="adicionarDigito('visual', '2')">2</button>
+                        <button class="tecla" onclick="adicionarDigito('visual', '3')">3</button>
+                        <button class="tecla" onclick="adicionarDigito('visual', '0')" style="grid-column: span 3;">0</button>
+                    </div>
+
+                    <!-- Botão Clique -->
+                    <div class="botao-clique-container" id="cliqueVisual" style="display: none;">
+                        <button class="botao-clique visual-clique" onclick="incrementarClique('visual')">
+                            <span style='opacity: 50%;'>&#128064;</span>
+                        </button>
+                    </div>
+                    
+                    <div class="botoes">
+                        <button class="btn btn-danger" onclick="apagarCampo('visual')">Apagar</button>
+                        <button class="btn btn-info" id="btnCorrecaoVisual" onclick="corrigirCampo('visual')" style="display: none;">Corrigir</button>
+                        <button class="btn btn-success" onclick="confirmarCampo('visual')">Confirmar</button>
+                    </div>
+                </div>
+
+                <!-- Campo Cameras -->
+                <div class="campo-contagem cameras">
+                    <div class="campo-header">
+                        <h3>Câmeras</h3>
+                        <input type="text" class="display-valor" id="displayCameras" value="0" readonly>
+                    </div>
+                    
+                    <!-- Teclado Numérico -->
+                    <div class="teclado-numerico" id="tecladoCameras">
+                        <button class="tecla" onclick="adicionarDigito('cameras', '7')">7</button>
+                        <button class="tecla" onclick="adicionarDigito('cameras', '8')">8</button>
+                        <button class="tecla" onclick="adicionarDigito('cameras', '9')">9</button>
+                        <button class="tecla" onclick="adicionarDigito('cameras', '4')">4</button>
+                        <button class="tecla" onclick="adicionarDigito('cameras', '5')">5</button>
+                        <button class="tecla" onclick="adicionarDigito('cameras', '6')">6</button>
+                        <button class="tecla" onclick="adicionarDigito('cameras', '1')">1</button>
+                        <button class="tecla" onclick="adicionarDigito('cameras', '2')">2</button>
+                        <button class="tecla" onclick="adicionarDigito('cameras', '3')">3</button>
+                        <button class="tecla" onclick="adicionarDigito('cameras', '0')" style="grid-column: span 3;">0</button>
+                    </div>
+
+                    <!-- Botão Clique -->
+                    <div class="botao-clique-container" id="cliqueCameras" style="display: none;">
+                        <button class="botao-clique cameras-clique" onclick="incrementarClique('cameras')">
+                            <span style='opacity: 50%;'>&#128652;</span>
+                        </button>
+                    </div>
+                    
+                    <div class="botoes">
+                        <button class="btn btn-danger" onclick="apagarCampo('cameras')">Apagar</button>
+                        <button class="btn btn-info" id="btnCorrecaoCameras" onclick="corrigirCampo('cameras')" style="display: none;">Corrigir</button>
+                        <button class="btn btn-success" onclick="confirmarCampo('cameras')">Confirmar</button>
+                    </div>
+                </div>
+            </div>
+
+            <button class="fab" onclick="mostrarMenuFlutuante()">⋮</button>
+        </div>
+
+        <!-- Tela Lista de Contagens -->
+        <div id="telaLista" class="screen">
+            <h1>Lista de Contagens</h1>
+            <input type="text" id="searchInput" class="search-bar" placeholder="Buscar por data ou carro..." onkeyup="filtrarContagens()">
+            <div id="listaContagens"></div>
+            <button class="btn btn-tertiary" onclick="mostrarTela('telaInicial')" style="margin-top: 20px;">Voltar</button>
+        </div>
+    </div>
+
+    <!-- Modal de Detalhes -->
+    <div id="modalDetalhes" class="modal" onclick="fecharModal('modalDetalhes')">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <h2>Detalhes da Contagem</h2>
+            <div id="conteudoModal"></div>
+            <button class="btn btn-secondary" onclick="fecharModal('modalDetalhes')">Fechar</button>
+        </div>
+    </div>
+
+    <!-- Modal Menu Flutuante -->
+    <div id="modalMenu" class="modal" onclick="fecharModal('modalMenu')">
+        <div class="modal-content menu-opcoes" onclick="event.stopPropagation()">
+            <button class="btn-close-modal" onclick="fecharModal('modalMenu')">✕</button>
+            <h3>Opções</h3>
+
+            <div class="opcao-modo">
+                <label>Visual:</label>
+                <select id="modoVisual" onchange="alterarModoInsercao('visual')">
+                    <option value="teclado">Teclado</option>
+                    <option value="clique">Clique</option>
+                </select>
+            </div>
+
+            <div class="opcao-modo">
+                <label>Câmeras:</label>
+                <select id="modoCameras" onchange="alterarModoInsercao('cameras')">
+                    <option value="teclado">Teclado</option>
+                    <option value="clique">Clique</option>
+                </select>
+            </div>
+
+            <button class="btn btn-warning" style="margin-top: 20px; margin-bottom: 10px;" onclick="pausarContagem()">Pausar Contagem</button>
+            <button class="btn btn-primary" style="margin-bottom: 10px;" onclick="finalizarContagem()">Finalizar Contagem</button>
+        </div>
+    </div>
+
+    <script src="https://juaomais48.github.io/app-contador/script.js"></script>
+</body>
+</html>

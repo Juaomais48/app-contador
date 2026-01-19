@@ -306,31 +306,49 @@ function retomarContagem(id) {
 
 // Navegar entre embarques
 function navegarEmbarque(direcao) {
+    // direcao: -1 = direita (volta para anterior), +1 = esquerda (avança para próximo)
     const novoNumero = embarqueVisualizadoNumero + direcao;
     
     // Validar limites
-    if (novoNumero < 1 || novoNumero > contagemAtual.embarques.length) {
+    if (novoNumero < 1 || novoNumero > embarqueAtualNumero) {
         return;
     }
     
     embarqueVisualizadoNumero = novoNumero;
     
-    // Carregar dados do embarque
-    const embarque = contagemAtual.embarques[embarqueVisualizadoNumero - 1];
-    
-    valorCameras = String(embarque.cameras);
-    valorVisual = String(embarque.visual);
-    valorCamerasConfirmado = embarque.cameras;
-    valorVisualConfirmado = embarque.visual;
-    
-    document.getElementById('displayCameras').value = valorCameras;
-    document.getElementById('displayVisual').value = valorVisual;
-    document.getElementById('displayCameras').classList.add('valor-confirmado');
-    document.getElementById('displayVisual').classList.add('valor-confirmado');
-    document.getElementById('btnCorrecaoCameras').style.display = 'inline-block';
-    document.getElementById('btnCorrecaoVisual').style.display = 'inline-block';
-    document.querySelector('.campo-contagem.cameras .btn-success').style.display = 'none';
-    document.querySelector('.campo-contagem.visual .btn-success').style.display = 'none';
+    // Se estamos no embarque atual (não confirmado ainda), limpar campos
+    if (embarqueVisualizadoNumero === embarqueAtualNumero) {
+        valorCameras = '0';
+        valorVisual = '0';
+        valorCamerasConfirmado = null;
+        valorVisualConfirmado = null;
+        
+        document.getElementById('displayCameras').value = '0';
+        document.getElementById('displayVisual').value = '0';
+        document.getElementById('displayCameras').classList.remove('valor-confirmado');
+        document.getElementById('displayVisual').classList.remove('valor-confirmado');
+        document.getElementById('btnCorrecaoCameras').style.display = 'none';
+        document.getElementById('btnCorrecaoVisual').style.display = 'none';
+        document.querySelector('.campo-contagem.cameras .btn-success').style.display = 'inline-block';
+        document.querySelector('.campo-contagem.visual .btn-success').style.display = 'inline-block';
+    } else {
+        // Carregar dados do embarque confirmado
+        const embarque = contagemAtual.embarques[embarqueVisualizadoNumero - 1];
+        
+        valorCameras = String(embarque.cameras);
+        valorVisual = String(embarque.visual);
+        valorCamerasConfirmado = embarque.cameras;
+        valorVisualConfirmado = embarque.visual;
+        
+        document.getElementById('displayCameras').value = valorCameras;
+        document.getElementById('displayVisual').value = valorVisual;
+        document.getElementById('displayCameras').classList.add('valor-confirmado');
+        document.getElementById('displayVisual').classList.add('valor-confirmado');
+        document.getElementById('btnCorrecaoCameras').style.display = 'inline-block';
+        document.getElementById('btnCorrecaoVisual').style.display = 'inline-block';
+        document.querySelector('.campo-contagem.cameras .btn-success').style.display = 'none';
+        document.querySelector('.campo-contagem.visual .btn-success').style.display = 'none';
+    }
     
     document.getElementById('embarqueAtual').textContent = `Embarque ${embarqueVisualizadoNumero}`;
     
@@ -342,18 +360,18 @@ function atualizarBotoesNavegacao() {
     const btnEsquerda = document.getElementById('btnSetaEsquerda');
     const btnDireita = document.getElementById('btnSetaDireita');
     
-    // Botão esquerda (voltar ao próximo embarque) - só aparece se não estiver no último
+    // Botão direita (▶): volta para embarques anteriores - aparece se não estiver no embarque 1
+    if (embarqueVisualizadoNumero > 1) {
+        btnDireita.style.display = 'inline-block';
+    } else {
+        btnDireita.style.display = 'none';
+    }
+    
+    // Botão esquerda (◀): avança para embarques posteriores - aparece se não estiver no embarque atual (último)
     if (embarqueVisualizadoNumero < embarqueAtualNumero) {
         btnEsquerda.style.display = 'inline-block';
     } else {
         btnEsquerda.style.display = 'none';
-    }
-    
-    // Botão direita (voltar ao embarque anterior) - só aparece se tiver embarques confirmados e não estiver no primeiro
-    if (contagemAtual.embarques.length > 0 && embarqueVisualizadoNumero > 1) {
-        btnDireita.style.display = 'inline-block';
-    } else {
-        btnDireita.style.display = 'none';
     }
 }
 
@@ -746,12 +764,17 @@ function mostrarDetalhes(id) {
     }
 
     let classeAcuracia = '';
-    if (acuracia >= 95 && acuracia <= 105) {
-        classeAcuracia = 'acuracia-excelente';
-    } else if (acuracia >= 90 && acuracia <= 110) {
-        classeAcuracia = 'acuracia-boa';
-    } else {
-        classeAcuracia = 'acuracia-baixa';
+    let mensagemAcuracia = '';
+    
+    if (acuracia <= 94) {
+        classeAcuracia = 'acuracia-critica';
+        mensagemAcuracia = ' - Enviar para a manutenção</p>';
+    } else if (acuracia >= 95 && acuracia <= 105) {
+        classeAcuracia = 'acuracia-saudavel';
+        mensagemAcuracia = '';
+    } else if (acuracia >= 106) {
+        classeAcuracia = 'acuracia-critica';
+        mensagemAcuracia = ' - Enviar para a manutenção</p>';
     }
 
     let statusTexto = contagem.finalizada ? 'Finalizada' : (contagem.pausada ? 'Pausada' : 'Em andamento');
@@ -763,7 +786,7 @@ function mostrarDetalhes(id) {
         <p><strong>Horário Término:</strong> ${contagem.horarioTermino || 'Não informado'}</p>
         <p><strong>Total Visual:</strong> ${contagem.totalVisual}</p>
         <p><strong>Total Câmeras:</strong> ${contagem.totalCameras}</p>
-        <p><strong>Percentual:</strong> <span class="${classeAcuracia}">${acuracia}%</span></p>
+        <p><strong>Percentual:</strong> <span class="${classeAcuracia}">${acuracia}%${mensagemAcuracia}</span></p>
         <p><strong>Status:</strong> ${statusTexto}</p>
         <br>
         <pre>${embarquesDetalhes}</pre>

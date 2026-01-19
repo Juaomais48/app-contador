@@ -255,11 +255,18 @@ h1 {
 
 .info-contagem {
     background: #f0f0f0;
-    padding: 3px;
+    padding: 8px;
     border-radius: 8px;
     margin-bottom: 15px;
-    max-height: 40px;
-    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.info-contagem h2 {
+    margin: 0;
+    font-size: 22px;
+    line-height: 1;
 }
 
 /* Lista de Contagens */
@@ -472,19 +479,13 @@ h1 {
     font-size: 14px;
 }
 
-.acuracia-excelente {
+.acuracia-saudavel {
     color: #28a745;
     font-weight: bold;
     font-size: 16px;
 }
 
-.acuracia-boa {
-    color: #ffc107;
-    font-weight: bold;
-    font-size: 16px;
-}
-
-.acuracia-baixa {
+.acuracia-critica {
     color: #dc3545;
     font-weight: bold;
     font-size: 16px;
@@ -498,29 +499,28 @@ h1 {
 }
 
 .btn-seta {
-    background: #2196F3;
-    color: white;
+    background: transparent;
+    color: #2196F3;
     border: none;
-    border-radius: 50%;
-    width: 40px;
-    height: 40px;
-    font-size: 18px;
+    width: 20px;
+    height: 20px;
+    font-size: 20px;
     cursor: pointer;
     transition: all 0.3s;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    padding: 0;
+    line-height: 1;
 }
 
 .btn-seta:hover {
-    background: #1976D2;
-    transform: scale(1.1);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    color: #1976D2;
+    transform: scale(1.2);
 }
 
 .btn-seta:active {
-    transform: scale(0.95);
+    transform: scale(0.9);
 }
 
 @media (max-width: 768px) {
